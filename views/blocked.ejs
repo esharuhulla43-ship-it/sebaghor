@@ -1,0 +1,13 @@
+<%- include('partials/head', { cssFile: 'login.css', bodyClass: 'login-body' }) %>
+
+<div class="login-wrap">
+  <div class="card-neon" style="text-align:center">
+    <h2 class="card-title" style="color:#fbbf24">⏳ আপনার আইডি এখনো একটিভ হয়নি</h2>
+    <p class="card-sub">আইডি একটিভ করার জন্য এডমিন কে WhatsApp এ মেসেজ দিন। নিচের বাটনে ক্লিক করলে মেসেজ অটো লেখা থাকবে।</p>
+    <a target="_blank" href="https://wa.me/<%= setting && setting.whatsappAdmin ? setting.whatsappAdmin : '' %>?text=আসসালামু আলাইকুম, আমি <%= user.name %>। দয়া করে আমার আইডিটি অ্যাকটিভ করে দিন।">
+      <button class="btn-neon" style="margin-top:20px">📱 WhatsApp এ এডমিন কে মেসেজ দিন</button>
+    </a>
+    <a href="/logout"><button class="btn-outline" style="margin-top:12px">লগআউট</button></a>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,43 @@
+<%- include('partials/head', { cssFile: 'login.css', bodyClass: 'login-body' }) %>
+
+<div class="login-wrap">
+  <div class="brand">
+    <div class="brand-logo">
+      <span class="pad">🎮</span>
+      <span class="seba">SEBA</span><span class="ghor">GHOR</span>
+    </div>
+    <p class="tagline">— সেবাই আমাদের শক্তি, আপনার পাশে সবসময় —</p>
+  </div>
+
+  <div class="card-neon">
+    <p class="welcome">স্বাগতম!</p>
+    <h2 class="card-title">নতুন অ্যাকাউন্ট</h2>
+    <p class="card-sub">নিচের তথ্য দিয়ে রেজিস্ট্রেশন করুন</p>
+
+    <% if (error && error.length) { %><div class="flash error"><%= error %></div><% } %>
+
+    <form method="POST" action="/register">
+      <div class="field"><span class="ic">👤</span><input name="name" placeholder="আপনার নাম লিখুন" required></div>
+      <div class="field"><span class="ic">📱</span><input name="mobile" placeholder="মোবাইল নাম্বার লিখুন" required></div>
+      <div class="field"><span class="ic">✉</span><input type="email" name="email" placeholder="ইমেইল এড্রেস" required></div>
+      <div class="field"><span class="ic">🔒</span><input type="password" name="password" id="pw2" placeholder="পাসওয়ার্ড" required><span class="eye" onclick="togglePw('pw2',this)">👁</span></div>
+      <div class="field"><span class="ic">🔒</span><input type="password" name="confirmPassword" id="pw3" placeholder="কনফার্ম পাসওয়ার্ড" required><span class="eye" onclick="togglePw('pw3',this)">👁</span></div>
+
+      <button class="btn-neon" type="submit">➜ রেজিস্ট্রেশন করুন</button>
+    </form>
+
+    <div class="divider">অথবা</div>
+    <a href="/login"><button class="btn-outline" type="button">➜ লগইন করুন</button></a>
+
+    <p class="secure">🛡️ ১০০% নিরাপদ ও সুরক্ষিত</p>
+  </div>
+</div>
+
+<script>
+function togglePw(id, el){
+  const i = document.getElementById(id);
+  if(i.type === 'password'){ i.type='text'; el.textContent='🙈'; }
+  else { i.type='password'; el.textContent='👁'; }
+}
+</script>
+</body></html>

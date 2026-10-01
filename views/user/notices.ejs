@@ -1,0 +1,20 @@
+<%- include('../partials/head', { cssFile: 'dashboard.css', bodyClass: 'dash' }) %>
+
+<div class="topbar">
+  <div class="left"><a href="/user/dashboard" style="color:#0f5132;font-weight:700">⬅ ফিরে যান</a></div>
+</div>
+
+<div class="section" style="max-width:700px;margin:30px auto">
+  <div class="section-title">📢 নোটিশ</div>
+  <% if (!notices.length) { %>
+    <p style="color:#64748b">কোনো নোটিশ নেই।</p>
+  <% } else { %>
+    <% notices.forEach(n => { %>
+      <div style="background:#fff;border-left:4px solid #10b981;border-radius:10px;padding:16px;margin-bottom:12px;box-shadow:0 4px 12px rgba(16,185,129,.08)">
+        <p style="font-size:14.5px;line-height:1.6"><%= n.message %></p>
+        <p style="font-size:12px;color:#94a3b8;margin-top:8px"><%= n.createdAt.toLocaleString('bn-BD') %></p>
+      </div>
+    <% }) %>
+  <% } %>
+</div>
+</body></html>

@@ -1,0 +1,53 @@
+<%- include('../partials/head', { cssFile: 'dashboard.css', bodyClass: 'dash' }) %>
+
+<div class="topbar">
+  <div class="left"><a href="/user/dashboard" style="color:#0f5132;font-weight:700">⬅ ফিরে যান</a></div>
+  <div class="right"><div class="balance-chip">💼 <div><small>ব্যালেন্স</small><b>৳ <%= user.balance.toFixed(2) %></b></div></div></div>
+</div>
+
+<div class="section" style="max-width:700px;margin:30px auto">
+  <div class="section-title">💰 ব্যালেন্স রিচার্জ</div>
+
+  <div class="small-card" style="cursor:default;flex-direction:column;align-items:flex-start;gap:14px;padding:22px">
+    <p style="color:#64748b;font-size:14px">নিচের নাম্বারে <b>Send Money / Personal</b> করে টাকা পাঠান, তারপর ফর্ম পূরণ করুন।</p>
+    <hr style="width:100%;border:none;border-top:1px solid #d1fae5">
+    <div style="display:flex;justify-content:space-between;width:100%"><b>📱 বিকাশ (Personal)</b><span style="color:#10b981;font-weight:700"><%= setting.bkashNumber || '—' %></span></div>
+    <div style="display:flex;justify-content:space-between;width:100%"><b>📱 নগদ (Personal)</b><span style="color:#10b981;font-weight:700"><%= setting.nagadNumber || '—' %></span></div>
+    <% if (setting.paymentNumber) { %>
+      <div style="display:flex;justify-content:space-between;width:100%"><b>📱 পেমেন্ট নাম্বার</b><span style="color:#10b981;font-weight:700"><%= setting.paymentNumber %></span></div>
+    <% } %>
+    <hr style="width:100%;border:none;border-top:1px solid #d1fae5">
+
+    <% if (error && error.length) { %><div class="flash error" style="width:100%"><%= error %></div><% } %>
+    <% if (success && success.length) { %><div class="flash success" style="width:100%"><%= success %></div><% } %>
+
+    <form method="POST" action="/user/recharge" style="width:100%;display:flex;flex-direction:column;gap:12px">
+      <input name="amount" type="number" min="1" placeholder="এমাউন্ট (৳)" required style="padding:12px;border:1px solid #d1fae5;border-radius:10px;font-family:inherit;font-size:14px">
+      <select name="method" style="padding:12px;border:1px solid #d1fae5;border-radius:10px;font-family:inherit;font-size:14px">
+        <option value="bKash">বিকাশ</option>
+        <option value="Nagad">নগদ</option>
+      </select>
+      <input name="senderNumber" placeholder="যে নাম্বার থেকে টাকা পাঠিয়েছেন" required style="padding:12px;border:1px solid #d1fae5;border-radius:10px;font-family:inherit;font-size:14px">
+      <input name="transactionId" placeholder="ট্রানজেকশন আইডি (TrxID)" required style="padding:12px;border:1px solid #d1fae5;border-radius:10px;font-family:inherit;font-size:14px">
+      <button class="btn-yellow" style="justify-content:center;font-size:15px;padding:13px">✅ রিচার্জ রিকোয়েস্ট পাঠান</button>
+    </form>
+  </div>
+
+  <div class="section-title" style="margin-top:26px">📜 রিচার্জ হিস্টোরি</div>
+  <% if (!history.length) { %>
+    <p style="color:#64748b">কোনো রিচার্জ নেই।</p>
+  <% } else { %>
+    <div class="small-grid">
+      <% history.forEach(r => { %>
+        <div class="small-card" style="cursor:default;flex-direction:column;align-items:flex-start;gap:6px;padding:16px">
+          <div style="display:flex;justify-content:space-between;width:100%">
+            <b style="color:#10b981">৳ <%= r.amount %></b>
+            <span style="padding:3px 10px;border-radius:20px;font-size:11px;background:#d1fae5;color:#065f46;font-weight:700">✅ অনুমোদিত</span>
+          </div>
+          <p style="font-size:12.5px;color:#64748b">মেথড: <%= r.method %> | নাম্বার: <%= r.senderNumber %><br>TrxID: <%= r.transactionId %><br><%= r.createdAt.toLocaleString('bn-BD') %></p>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+</body></html>

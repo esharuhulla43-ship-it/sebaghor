@@ -1,0 +1,31 @@
+<%- include('../partials/head', { cssFile: 'dashboard.css', bodyClass: 'dash' }) %>
+
+<div class="topbar">
+  <div class="left"><a href="/user/dashboard" style="color:#0f5132;font-weight:700">⬅ ফিরে যান</a></div>
+  <div class="right"><div class="balance-chip">💼 <div><small>ব্যালেন্স</small><b>৳ <%= user.balance.toFixed(2) %></b></div></div></div>
+</div>
+
+<div class="section" style="max-width:600px;margin:40px auto">
+  <div class="big-card" style="text-align:left;cursor:default;padding:30px">
+    <div style="text-align:center">
+      <div class="ic-bg" style="background:<%= product.color %>20;color:<%= product.color %>;width:80px;height:80px;font-size:36px;margin:0 auto 16px"><%= product.icon %></div>
+      <h2 style="font-size:22px;margin-bottom:8px"><%= product.name %></h2>
+      <p style="color:#64748b;margin-bottom:20px"><%= product.subtitle %></p>
+      <h3 style="color:#10b981;font-size:24px;margin-bottom:24px">৳ <%= product.price %></h3>
+    </div>
+
+    <% if (error && error.length) { %><div class="flash error"><%= error %></div><% } %>
+
+    <% if (user.balance < product.price) { %>
+      <div style="background:#fef2f2;color:#dc2626;padding:14px;border-radius:10px;text-align:center;margin-bottom:16px;font-weight:600">
+        ⚠️ দয়া করে রিচার্জ করুন। আপনার ব্যালেন্স পর্যাপ্ত নয়।
+      </div>
+      <a href="/user/recharge"><button class="btn-yellow" style="width:100%;justify-content:center">💰 এখনই রিচার্জ করুন</button></a>
+    <% } else { %>
+      <form method="POST" action="/user/order/<%= product._id %>">
+        <button class="btn-yellow" style="width:100%;justify-content:center;font-size:16px;padding:14px">🛒 অর্ডার করুন (<%= product.price %> ৳ কাটবে)</button>
+      </form>
+    <% } %>
+  </div>
+</div>
+</body></html>

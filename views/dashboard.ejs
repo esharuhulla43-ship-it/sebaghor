@@ -1,0 +1,82 @@
+<%- include('../partials/head', { cssFile: 'dashboard.css', bodyClass: 'dash', siteName: setting.siteName }) %>
+
+<div class="topbar">
+  <div class="left"><a href="/logout" class="logout">➜ লগআউট</a></div>
+  <div class="right">
+    <div class="balance-chip">💼 <div><small>ব্যালেন্স দেখুন</small><b>৳ <%= user.balance.toFixed(2) %></b></div></div>
+    <a href="/user/recharge"><button class="btn-outline-green">💰 এখানে টাকা দেখাবে</button></a>
+    <a href="/user/notices" style="position:relative">
+      <button class="btn-outline-green">🔔 নোটিশ <% if(unread){ %><span style="background:#dc2626;color:#fff;border-radius:10px;padding:1px 7px;font-size:11px"><%= unread %></span><% } %></button>
+    </a>
+  </div>
+</div>
+
+<div class="banner">
+  <div class="user-info">
+    <div class="avatar">👤</div>
+    <div>
+      <h1>স্বাগতম, <%= user.name %> 👋</h1>
+      <p>আপনার প্রয়োজনীয় সেবাগুলো নিতে তালিকাভুক্ত করা হয়েছে।</p>
+    </div>
+  </div>
+  <div class="actions">
+    <a href="/user/recharge"><button class="btn-yellow">💼 রিচার্জ</button></a>
+    <a target="_blank" href="https://wa.me/<%= setting.whatsappSupport %>?text=আসসালামু আলাইকুম, আমি <%= user.name %>। ভাইয়া আমার একটু সমস্যা হয়েছে, একটু হেল্প করেন প্লিজ।">
+      <button class="btn-ghost">🎧 সাপোর্ট</button>
+    </a>
+    <a href="/user/profile"><button class="btn-ghost">👤 প্রোফাইল ➜</button></a>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">আমাদের সেবাসমূহ</div>
+  <div class="big-grid">
+    <% bigProducts.forEach(p => { %>
+      <a href="/user/order/<%= p._id %>" class="big-card">
+        <div class="ic-bg" style="background:<%= p.color %>20;color:<%= p.color %>"><%= p.icon %></div>
+        <h3><%= p.name %></h3>
+        <p><%= p.subtitle %></p>
+        <div class="arrow">➜</div>
+      </a>
+    <% }) %>
+  </div>
+  <div class="small-grid" style="margin-top:14px">
+    <% smallProducts.forEach(p => { %>
+      <a href="/user/order/<%= p._id %>" class="small-card">
+        <div class="small-ic" style="background:<%= p.color %>20;color:<%= p.color %>"><%= p.icon %></div>
+        <div class="small-txt">
+          <h4><%= p.name %></h4>
+          <p><%= p.subtitle %></p>
+        </div>
+        <span class="small-arrow">➜</span>
+      </a>
+    <% }) %>
+    <div class="small-card" style="border:2px dashed #10b981;cursor:default">
+      <div class="small-ic" style="background:#ecfdf5;color:#10b981;font-size:22px;font-weight:800">＋</div>
+      <div class="small-txt">
+        <h4 style="color:#10b981">নতুন সেবা</h4>
+        <p>এডমিন যেকোনো সময় যোগ করতে পারবে</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="footer-banner">
+    <div class="fb-left"><div class="phone-ill">📱</div></div>
+    <div class="fb-mid">
+      <h2>দ্রুত, নিরাপদ এবং নির্ভরযোগ্য সেবা</h2>
+      <p>আপনার সকল সরকারি সেবা এখন এক প্ল্যাটফর্মে</p>
+      <div class="fb-badges">
+        <span>🛡 নিরাপদ</span>
+        <span>⚡ দ্রুত সেবা</span>
+        <span>👥 বিশ্বস্ত প্ল্যাটফর্ম</span>
+        <span>🎧 ২৪/৭ সাপোর্ট</span>
+      </div>
+    </div>
+    <div class="fb-right">
+      <div class="handwrite">সবার জন্য<br><b>স্মার্ট সেবা</b></div>
+    </div>
+  </div>
+</div>
+</body></html>

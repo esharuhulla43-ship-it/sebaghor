@@ -1,0 +1,53 @@
+<%- include('partials/head', { cssFile: 'login.css', bodyClass: 'login-body', siteName: setting.siteName }) %>
+
+<div class="login-wrap">
+  <div class="brand">
+    <div class="brand-logo">
+      <span class="pad">🎮</span>
+      <span class="seba">SEBA</span><span class="ghor">GHOR</span>
+    </div>
+    <p class="tagline">— <%= setting.tagline %> —</p>
+  </div>
+
+  <div class="card-neon">
+    <p class="welcome">স্বাগতম!</p>
+    <h2 class="card-title">লগইন করুন</h2>
+    <p class="card-sub">আপনার অ্যাকাউন্টে প্রবেশ করুন</p>
+
+    <% if (error && error.length) { %><div class="flash error"><%= error %></div><% } %>
+    <% if (success && success.length) { %><div class="flash success"><%= success %></div><% } %>
+
+    <form method="POST" action="/login">
+      <div class="field">
+        <span class="ic">✉</span>
+        <input name="identifier" placeholder="ইমেইল অথবা মোবাইল নাম্বার" required>
+      </div>
+      <div class="field">
+        <span class="ic">🔒</span>
+        <input type="password" name="password" id="pw1" placeholder="পাসওয়ার্ড" required>
+        <span class="eye" onclick="togglePw('pw1',this)">👁</span>
+      </div>
+
+      <div class="row">
+        <label><input type="checkbox" name="remember"> আমাকে মনে রাখুন</label>
+        <a href="https://wa.me/<%= setting.whatsappSupport %>?text=পাসওয়ার্ড ভুলে গেছি" target="_blank">পাসওয়ার্ড ভুলে গেছেন?</a>
+      </div>
+
+      <button class="btn-neon" type="submit">➜ লগইন করুন</button>
+    </form>
+
+    <div class="divider">অথবা</div>
+    <a href="/register"><button class="btn-outline" type="button">👤 নতুন অ্যাকাউন্ট খুলুন ➜</button></a>
+
+    <p class="secure">🛡️ ১০০% নিরাপদ ও সুরক্ষিত</p>
+  </div>
+</div>
+
+<script>
+function togglePw(id, el){
+  const i = document.getElementById(id);
+  if(i.type === 'password'){ i.type='text'; el.textContent='🙈'; }
+  else { i.type='password'; el.textContent='👁'; }
+}
+</script>
+</body></html>
