@@ -103,17 +103,23 @@ router.get('/orders', isActiveUser, async (req, res) => {
 
 
 router.get('/download/:orderId', isActiveUser, async (req, res) => {
-  const o = await Order.findById(req.params.orderId).populate('product');
+  const o = await Order.findById(req.params.orderId)
+    .populate('product')
+    .populate('service');
   if (!o || o.user.toString() !== req.session.user._id.toString())
     return res.status(403).send('Unauthorized');
   if (o.status !== 'completed') return res.send('ফাইল এখনো প্রস্তুত হয়নি');
+
   if (o.adminPdf) return res.download('public/uploads/' + o.adminPdf);
   if (o.adminImage) return res.download('public/uploads/' + o.adminImage);
+
   if (o.adminText) {
+    const fileName = o.service ? o.service.name : (o.product ? o.product.name : 'file');
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    res.setHeader('Content-Disposition', `attachment; filename="${o.product.name}.txt"`);
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}.txt"`);
     return res.send(o.adminText);
   }
+
   res.send('কোনো ফাইল নেই');
 });
 
