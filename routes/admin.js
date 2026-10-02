@@ -6,6 +6,7 @@ const Order = require('../models/Order');
 const Notice = require('../models/Notice');
 const Setting = require('../models/Setting');
 const Transaction = require('../models/Transaction');
+const Service = require('../models/Service');
 const { isAdmin } = require('../middleware/auth');
 const multer = require('multer');
 
@@ -18,10 +19,12 @@ const upload = multer({ storage });
 router.get('/dashboard', isAdmin, async (req, res) => {
   const users = await User.find({ role: 'user' }).sort('-createdAt');
   const products = await Product.find().sort('-createdAt');
+  const services = await Service.find().sort('-createdAt');
   const orders = await Order.find().populate('user product').sort('-createdAt');
   const setting = await Setting.findOne() || {};
-  res.render('admin/dashboard', { users, products, orders, setting });
+  res.render('admin/dashboard', { users, products, orders, services, setting });
 });
+
 
 router.post('/users/toggle/:id', isAdmin, async (req, res) => {
   const u = await User.findById(req.params.id);
@@ -146,6 +149,68 @@ router.post('/recharges/reject/:id', isAdmin, async (req, res) => {
     req.flash('error', 'সমস্যা হয়েছে: ' + e.message);
     res.redirect('/admin/recharges');
   }
+});
+// ============= সার্ভিস ম্যানেজমেন্ট =============
+
+router.get('/services', isAdmin, async (req, res) => {
+  const services = await Service.find().sort('category sortOrder');
+  res.render('admin/services', { services });
+});
+
+router.post('/services/add', isAdmin, async (req, res) => {
+  try {
+    const { name, category, description, optionLabels, optionPrices } = req.body;
+    const options = [];
+    if (optionLabels) {
+      const labels = Array.isArray(optionLabels) ? optionLabels : [optionLabels];
+      const prices = Array.isArray(optionPrices) ? optionPrices : [optionPrices];
+      labels.forEach((label, i) => {
+        if (label && prices[i]) options.push({ label, price: Number(prices[i]) });
+      });
+    }
+    await Service.create({ name, category, description: description || '', options });
+    req.flash('success', '✅ সার্ভিস যোগ হয়েছে');
+    res.redirect('/admin/services');
+  } catch (e) {
+    req.flash('error', 'সমস্যা: ' + e.message);
+    res.redirect('/admin/services');
+  }
+});
+
+router.post('/services/edit/:id', isAdmin, async (req, res) => {
+  try {
+    const { name, category, description, optionLabels, optionPrices } = req.body;
+    const options = [];
+    if (optionLabels) {
+      const labels = Array.isArray(optionLabels) ? optionLabels : [optionLabels];
+      const prices = Array.isArray(optionPrices) ? optionPrices : [optionPrices];
+      labels.forEach((label, i) => {
+        if (label && prices[i]) options.push({ label, price: Number(prices[i]) });
+      });
+    }
+    await Service.findByIdAndUpdate(req.params.id, { name, category, description, options });
+    req.flash('success', '✅ সার্ভিস আপডেট হয়েছে');
+    res.redirect('/admin/services');
+  } catch (e) {
+    req.flash('error', 'সমস্যা: ' + e.message);
+    res.redirect('/admin/services');
+  }
+});
+
+router.post('/services/toggle/:id', isAdmin, async (req, res) => {
+  const service = await Service.findById(req.params.id);
+  if (service) {
+    service.active = !service.active;
+    await service.save();
+    req.flash('success', service.active ? '✅ সার্ভিস চালু হয়েছে' : '⏸️ সার্ভিস বন্ধ হয়েছে');
+  }
+  res.redirect('/admin/services');
+});
+
+router.post('/services/delete/:id', isAdmin, async (req, res) => {
+  await Service.findByIdAndDelete(req.params.id);
+  req.flash('success', '🗑️ সার্ভিস ডিলিট হয়েছে');
+  res.redirect('/admin/services');
 });
 
 module.exports = router;
