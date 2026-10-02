@@ -5,6 +5,7 @@ const Product = require('../models/Product');
 const Order = require('../models/Order');
 const Notice = require('../models/Notice');
 const Setting = require('../models/Setting');
+const Transaction = require('../models/Transaction');
 const { isAdmin } = require('../middleware/auth');
 const multer = require('multer');
 
@@ -89,6 +90,62 @@ router.post('/settings', isAdmin, async (req, res) => {
   await s.save();
   req.flash('success', '✅ সেটিংস সেভ হয়েছে');
   res.redirect('/admin/dashboard#settings');
+});
+// ============= রিচার্জ ম্যানেজমেন্ট =============
+
+// পেন্ডিং রিচার্জ লিস্ট
+router.get('/recharges', isAdmin, async (req, res) => {
+  const pending = await Transaction.find({ status: 'pending' })
+    .populate('user').sort('-createdAt');
+  const approved = await Transaction.find({ status: 'approved' })
+    .populate('user').sort('-createdAt').limit(20);
+  const rejected = await Transaction.find({ status: 'rejected' })
+    .populate('user').sort('-createdAt').limit(20);
+  res.render('admin/recharges', { pending, approved, rejected });
+});
+
+// Approve — ব্যালেন্স যোগ করুন
+router.post('/recharges/approve/:id', isAdmin, async (req, res) => {
+  try {
+    const trx = await Transaction.findById(req.params.id);
+    if (!trx || trx.status !== 'pending') {
+      req.flash('error', 'রিকোয়েস্ট পাওয়া যায়নি বা আগেই প্রসেস হয়েছে');
+      return res.redirect('/admin/recharges');
+    }
+
+    trx.status = 'approved';
+    await trx.save();
+
+    const user = await User.findById(trx.user);
+    user.balance += trx.amount;
+    await user.save();
+
+    req.flash('success', `✅ ৳${trx.amount} অনুমোদন করা হয়েছে। ${user.name} এর ব্যালেন্সে যোগ হয়েছে।`);
+    res.redirect('/admin/recharges');
+  } catch (e) {
+    req.flash('error', 'সমস্যা হয়েছে: ' + e.message);
+    res.redirect('/admin/recharges');
+  }
+});
+
+// Reject — ব্যালেন্স যোগ হবে না
+router.post('/recharges/reject/:id', isAdmin, async (req, res) => {
+  try {
+    const trx = await Transaction.findById(req.params.id);
+    if (!trx || trx.status !== 'pending') {
+      req.flash('error', 'রিকোয়েস্ট পাওয়া যায়নি বা আগেই প্রসেস হয়েছে');
+      return res.redirect('/admin/recharges');
+    }
+
+    trx.status = 'rejected';
+    await trx.save();
+
+    req.flash('success', `❌ ৳${trx.amount} রিকোয়েস্ট বাতিল করা হয়েছে`);
+    res.redirect('/admin/recharges');
+  } catch (e) {
+    req.flash('error', 'সমস্যা হয়েছে: ' + e.message);
+    res.redirect('/admin/recharges');
+  }
 });
 
 module.exports = router;

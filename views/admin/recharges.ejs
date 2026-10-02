@@ -1,0 +1,78 @@
+<%- include('../partials/head', { cssFile: 'dashboard.css', bodyClass: 'dash' }) %>
+
+<div class="topbar">
+  <div class="left"><a href="/admin/dashboard" style="color:#0f5132;font-weight:700">⬅ ড্যাশবোর্ডে ফিরুন</a></div>
+  <div class="right"><b style="color:#0f5132">💰 রিচার্জ ম্যানেজমেন্ট</b></div>
+</div>
+
+<div class="section">
+  <div class="section-title">⏳ পেন্ডিং রিচার্জ (<%= pending.length %>)</div>
+  <% if (pending.length === 0) { %>
+    <p style="color:#64748b">কোনো পেন্ডিং রিকোয়েস্ট নেই।</p>
+  <% } else { %>
+    <div class="small-grid">
+      <% pending.forEach(t => { %>
+        <div class="small-card" style="cursor:default;flex-direction:column;align-items:flex-start;gap:10px;padding:18px;border:2px solid #fbbf24">
+          <div style="display:flex;justify-content:space-between;width:100%">
+            <b><%= t.user.name %></b>
+            <span style="background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700">⏳ পেন্ডিং</span>
+          </div>
+          <p style="font-size:13px;color:#64748b;line-height:1.6">
+            📱 মোবাইল: <%= t.user.mobile %><br>
+            💰 এমাউন্ট: <b style="color:#10b981;font-size:15px">৳ <%= t.amount %></b><br>
+            📲 মেথড: <%= t.method %><br>
+            📞 প্রেরক নাম্বার: <%= t.senderNumber %><br>
+            🆔 TrxID: <b style="color:#dc2626"><%= t.transactionId %></b><br>
+            🕐 সময়: <%= t.createdAt.toLocaleString('bn-BD') %>
+          </p>
+          <div style="display:flex;gap:8px;width:100%">
+            <form method="POST" action="/admin/recharges/approve/<%= t._id %>" style="flex:1" onsubmit="return confirm('৳<%= t.amount %> অনুমোদন করবেন?')">
+              <button class="btn-yellow" style="width:100%;justify-content:center;font-size:13px;padding:10px">✅ কনফার্ম</button>
+            </form>
+            <form method="POST" action="/admin/recharges/reject/<%= t._id %>" style="flex:1" onsubmit="return confirm('বাতিল করবেন?')">
+              <button class="btn-ghost" style="width:100%;justify-content:center;font-size:13px;padding:10px;background:#dc2626;border-color:#dc2626;color:#fff">❌ রিজেক্ট</button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<div class="section">
+  <div class="section-title">✅ সাম্প্রতিক অনুমোদিত</div>
+  <% if (approved.length === 0) { %>
+    <p style="color:#64748b">কোনো অনুমোদিত নেই।</p>
+  <% } else { %>
+    <div class="small-grid">
+      <% approved.forEach(t => { %>
+        <div class="small-card" style="cursor:default;padding:14px">
+          <div class="small-txt">
+            <h4><%= t.user.name %> — ৳<%= t.amount %></h4>
+            <p><%= t.method %> | <%= t.transactionId %> | <%= t.createdAt.toLocaleString('bn-BD') %></p>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<div class="section">
+  <div class="section-title">❌ সাম্প্রতিক বাতিল</div>
+  <% if (rejected.length === 0) { %>
+    <p style="color:#64748b">কোনো বাতিল নেই।</p>
+  <% } else { %>
+    <div class="small-grid">
+      <% rejected.forEach(t => { %>
+        <div class="small-card" style="cursor:default;padding:14px">
+          <div class="small-txt">
+            <h4><%= t.user.name %> — ৳<%= t.amount %></h4>
+            <p><%= t.method %> | <%= t.transactionId %></p>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+</body></html>

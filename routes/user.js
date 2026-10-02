@@ -80,14 +80,28 @@ router.get('/recharge', isActiveUser, async (req, res) => {
 
 router.post('/recharge', isActiveUser, async (req, res) => {
   const { amount, method, senderNumber, transactionId } = req.body;
+
+  // TrxID আগে ব্যবহার হয়েছে কি না চেক
   const ex = await Transaction.findOne({ transactionId });
-  if (ex) { req.flash('error', 'এই TrxID আগে ব্যবহার হয়েছে'); return res.redirect('/user/recharge'); }
+  if (ex) {
+    req.flash('error', 'এই TrxID আগে ব্যবহার হয়েছে');
+    return res.redirect('/user/recharge');
+  }
+
   const user = await User.findById(req.session.user._id);
-  user.balance += Number(amount);
-  await user.save();
-  await Transaction.create({ user: user._id, amount, method, senderNumber, transactionId });
-  req.flash('success', `✅ ৳${amount} ব্যালেন্স যোগ হয়েছে!`);
-  res.redirect('/user/dashboard');
+
+  // ⚠️ ব্যালেন্স যোগ করা হবে না — শুধু pending রিকোয়েস্ট
+  await Transaction.create({
+    user: user._id,
+    amount,
+    method,
+    senderNumber,
+    transactionId,
+    status: 'pending'
+  });
+
+  req.flash('success', `⏳ ৳${amount} রিচার্জ রিকোয়েস্ট পাঠানো হয়েছে। অ্যাডমিন যাচাই করে অনুমোদন করলে ব্যালেন্স যোগ হবে।`);
+  res.redirect('/user/recharge');
 });
 
 router.get('/notices', isActiveUser, async (req, res) => {

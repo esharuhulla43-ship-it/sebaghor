@@ -6,7 +6,11 @@ const trxSchema = new mongoose.Schema({
   method: { type: String, enum: ['bKash', 'Nagad'], required: true },
   senderNumber: { type: String, required: true },
   transactionId: { type: String, required: true, unique: true },
-  status: { type: String, enum: ['pending', 'approved'], default: 'approved' },
+  status: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending'
+  },
   createdAt: { type: Date, default: Date.now }
 });
 

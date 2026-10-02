@@ -39,14 +39,42 @@
   <% } else { %>
     <div class="small-grid">
       <% history.forEach(r => { %>
-        <div class="small-card" style="cursor:default;flex-direction:column;align-items:flex-start;gap:6px;padding:16px">
-          <div style="display:flex;justify-content:space-between;width:100%">
-            <b style="color:#10b981">৳ <%= r.amount %></b>
-            <span style="padding:3px 10px;border-radius:20px;font-size:11px;background:#d1fae5;color:#065f46;font-weight:700">✅ অনুমোদিত</span>
-          </div>
-          <p style="font-size:12.5px;color:#64748b">মেথড: <%= r.method %> | নাম্বার: <%= r.senderNumber %><br>TrxID: <%= r.transactionId %><br><%= r.createdAt.toLocaleString('bn-BD') %></p>
-        </div>
-      <% }) %>
+
+<div class="small-card" style="cursor:default; flex-direction
+
+<div style="display: flex; justify-content:space-between;wi
+
+<b style="color:#10b981">৳ <%= r.amount %></b>
+
+<% if (r.status === 'approved') { %>
+
+<span style="padding:3px 10px;border-radius:20px;fon
+
+<% } else if (r.status === 'rejected') { %>
+
+<span style="padding:3px 10px;border-radius:20px;fon
+
+<% } else { %>
+
+<span style="padding:3px 10px;border-radius:20px;fon
+
+<% } %>
+
+</div>
+
+<p style="font-size:12.5px;color:#64748b">
+
+মেথড: <%= r.method %> | নাম্বার: <%= r.senderNumber
+
+TrxID: <%= r.transactionld %><br>
+
+<%= r.createdAt.toLocaleString('bn-BD') %>
+
+</p>
+
+</div>
+
+< % }) %>
     </div>
   <% } %>
 </div>
