@@ -69,15 +69,39 @@ router.post('/products/delete/:id', isAdmin, async (req, res) => {
 router.post('/orders/complete/:id', isAdmin,
   upload.fields([{ name: 'adminPdf', maxCount: 1 }, { name: 'adminImage', maxCount: 1 }]),
   async (req, res) => {
-    const { adminText } = req.body;
-    const pdf = req.files['adminPdf'] ? req.files['adminPdf'][0].filename : null;
-    const img = req.files['adminImage'] ? req.files['adminImage'][0].filename : null;
-    await Order.findByIdAndUpdate(req.params.id, {
-      status: 'completed', adminPdf: pdf, adminImage: img, adminText
-    });
-    req.flash('success', '✅ অর্ডার কমপ্লিট হয়েছে');
-    res.redirect('/admin/dashboard#orders');
-});
+    try {
+      const fs = require('fs');
+      const { adminText } = req.body;
+      const updateData = {
+        status: 'completed',
+        adminText: adminText || ''
+      };
+
+      if (req.files && req.files['adminPdf'] && req.files['adminPdf'][0]) {
+        const pdf = req.files['adminPdf'][0];
+        const pdfData = fs.readFileSync(pdf.path);
+        updateData.adminPdfData = pdfData.toString('base64');
+        updateData.adminPdfName = pdf.originalname;
+        fs.unlinkSync(pdf.path);
+      }
+
+      if (req.files && req.files['adminImage'] && req.files['adminImage'][0]) {
+        const img = req.files['adminImage'][0];
+        const imgData = fs.readFileSync(img.path);
+        updateData.adminImageData = imgData.toString('base64');
+        updateData.adminImageName = img.originalname;
+        fs.unlinkSync(img.path);
+      }
+
+      await Order.findByIdAndUpdate(req.params.id, updateData);
+      req.flash('success', '✅ অর্ডার কমপ্লিট হয়েছে');
+      res.redirect('/admin/dashboard#orders');
+    } catch (e) {
+      req.flash('error', 'সমস্যা: ' + e.message);
+      res.redirect('/admin/dashboard');
+    }
+  });
+
 
 router.post('/notice/:userId', isAdmin, async (req, res) => {
   await Notice.create({ user: req.params.userId, message: req.body.message });
