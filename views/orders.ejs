@@ -7,29 +7,43 @@
 
 <div class="section">
   <div class="section-title">🧾 আমার অর্ডার লিস্ট</div>
-  <% if (!orders.length) { %>
+
+  <% if (!orders || orders.length === 0) { %>
     <p style="color:#64748b">আপনার কোনো অর্ডার নেই।</p>
   <% } else { %>
     <div class="small-grid">
       <% orders.forEach(o => { %>
         <div class="small-card" style="cursor:default;flex-direction:column;align-items:flex-start;gap:8px;padding:18px">
           <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
-            <h4 style="font-size:15px"><%= o.product.icon %> <%= o.product.name %></h4>
+            <b>
+              <% if (o.service) { %>
+                🛠️ <%= o.service.name %>
+              <% } else if (o.product) { %>
+                📦 <%= o.product.name %>
+              <% } else { %>
+                ❓ অর্ডার
+              <% } %>
+            </b>
             <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;<%= o.status === 'completed' ? 'background:#d1fae5;color:#065f46' : 'background:#fef3c7;color:#92400e' %>">
               <%= o.status === 'completed' ? '✅ কমপ্লিট' : '⏳ পেন্ডিং' %>
             </span>
           </div>
-          <p style="color:#10b981;font-weight:700">৳ <%= o.price %></p>
+          <p style="font-size:13px;color:#64748b">
+            💰 দাম: <b style="color:#10b981">৳ <%= o.price || o.selectedPrice || 0 %></b><br>
+            <% if (o.selectedOption) { %>📝 অপশন: <%= o.selectedOption %><br><% } %>
+            <% if (o.details) { %>📋 বিস্তারিত: <%= o.details %><br><% } %>
+            🕐 <%= o.createdAt ? o.createdAt.toLocaleString('bn-BD') : '' %>
+          </p>
+
           <% if (o.status === 'completed') { %>
             <a href="/user/download/<%= o._id %>" style="width:100%">
-              <button class="btn-yellow" style="width:100%;justify-content:center;font-size:13px;padding:9px">⬇️ ডাউনলোড করুন</button>
+              <button class="btn-yellow" style="width:100%;justify-content:center;font-size:13px;padding:10px">⬇️ ডাউনলোড করুন</button>
             </a>
-          <% } else { %>
-            <p style="font-size:12px;color:#64748b">এডমিন ফাইল আপলোড করলে ডাউনলোড পাবেন।</p>
           <% } %>
         </div>
       <% }) %>
     </div>
   <% } %>
 </div>
+
 </body></html>
