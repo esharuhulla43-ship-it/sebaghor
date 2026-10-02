@@ -46,9 +46,12 @@
               <b style="font-size:15px"><%= s.name %></b>
               <p style="font-size:11px;color:#64748b">📁 <%= s.category %></p>
             </div>
-            <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;<%= s.active ? 'background:#d1fae5;color:#065f46' : 'background:#fee2e2;color:#991b1b' %>">
-              <%= s.active ? '✅ চালু' : '⏸️ বন্ধ' %>
-            </span>
+           <form method="POST" action="/admin/services/toggle/<%= s._id %>" style="display:inline">
+  <button type="submit" style="position:relative;display:inline-flex;align-items:center;background:<%= s.active ? '#10b981' : '#cbd5e1' %>;border:0;border-radius:20px;cursor:pointer;font-family:inherit;transition:.3s;width:60px;height:28px;padding:0">
+    <span style="position:absolute;left:<%= s.active ? '34px' : '4px' %>;top:4px;width:20px;height:20px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span>
+    <span style="position:absolute;<%= s.active ? 'left:8px' : 'right:8px' %>;top:50%;transform:translateY(-50%);color:#fff;font-size:10px;font-weight:700;transition:.3s"><%= s.active ? 'ON' : 'OFF' %></span>
+  </button>
+</form> 
           </div>
 
           <% if (s.description) { %>
