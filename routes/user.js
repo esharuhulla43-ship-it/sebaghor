@@ -110,8 +110,19 @@ router.get('/download/:orderId', isActiveUser, async (req, res) => {
     return res.status(403).send('Unauthorized');
   if (o.status !== 'completed') return res.send('ফাইল এখনো প্রস্তুত হয়নি');
 
-  if (o.adminPdf) return res.download('public/uploads/' + o.adminPdf);
-  if (o.adminImage) return res.download('public/uploads/' + o.adminImage);
+  if (o.adminPdfData) {
+    const buffer = Buffer.from(o.adminPdfData, 'base64');
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${o.adminPdfName || 'file.pdf'}"`);
+    return res.send(buffer);
+  }
+
+  if (o.adminImageData) {
+    const buffer = Buffer.from(o.adminImageData, 'base64');
+    res.setHeader('Content-Type', 'image/jpeg');
+    res.setHeader('Content-Disposition', `attachment; filename="${o.adminImageName || 'image.jpg'}"`);
+    return res.send(buffer);
+  }
 
   if (o.adminText) {
     const fileName = o.service ? o.service.name : (o.product ? o.product.name : 'file');
