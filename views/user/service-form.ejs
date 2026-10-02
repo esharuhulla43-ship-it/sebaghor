@@ -1,0 +1,46 @@
+<%- include('../partials/head', { cssFile: 'dashboard.css', bodyClass: 'dash' }) %>
+
+<div class="topbar">
+  <div class="left"><a href="/user/dashboard" style="color:#0f5132;font-weight:700">⬅ ড্যাশবোর্ডে ফিরুন</a></div>
+  <div class="right"><div class="balance-chip">💼 <div><small>ব্যালেন্স</small><b>৳ <%= user.balance.toFixed(2) %></b></div></div></div>
+</div>
+
+<div class="section" style="max-width:700px;margin:30px auto">
+  <div class="section-title">🛠️ <%= service.name %></div>
+
+  <div class="small-card" style="cursor:default;padding:24px">
+    <div style="background:#f0fdf4;padding:14px;border-radius:10px;margin-bottom:20px">
+      <p style="font-size:13px;color:#0f5132"><b>📁 ক্যাটাগরি:</b> <%= service.category %></p>
+      <% if (service.description) { %>
+        <p style="font-size:13px;color:#0f5132;margin-top:6px"><b>📝 বর্ণনা:</b> <%= service.description %></p>
+      <% } %>
+    </div>
+
+    <% if (error && error.length) { %>
+      <div class="flash error" style="margin-bottom:14px"><%= error %></div>
+    <% } %>
+
+    <form method="POST" action="/user/service/<%= service._id %>" style="display:flex;flex-direction:column;gap:16px">
+      <div>
+        <label style="display:block;font-weight:700;color:#0f5132;margin-bottom:8px;font-size:14px">কাজের অপশন বাছাই করুন: <span style="color:#dc2626">*</span></label>
+        <select name="optionIndex" required style="width:100%;padding:12px;border:1.5px solid #d1fae5;border-radius:10px;font-family:inherit;font-size:14px;background:#fff">
+          <option value="">-- অপশন সিলেক্ট করুন --</option>
+          <% service.options.forEach((opt, i) => { %>
+            <option value="<%= i %>"><%= opt.label %> — ৳ <%= opt.price %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div>
+        <label style="display:block;font-weight:700;color:#0f5132;margin-bottom:8px;font-size:14px">কাজের বিস্তারিত তথ্য: <span style="color:#dc2626">*</span></label>
+        <textarea name="details" required rows="6" placeholder="আপনার তথ্য এখানে লিখুন..." style="width:100%;padding:12px;border:1.5px solid #d1fae5;border-radius:10px;font-family:inherit;font-size:14px;resize:vertical"></textarea>
+      </div>
+
+      <button class="btn-yellow" type="submit" style="justify-content:center;padding:14px;font-size:16px">
+        ✅ সাবমিট করুন
+      </button>
+    </form>
+  </div>
+</div>
+
+</body></html>

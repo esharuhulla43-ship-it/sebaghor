@@ -6,6 +6,7 @@ const Order = require('../models/Order');
 const Transaction = require('../models/Transaction');
 const Notice = require('../models/Notice');
 const Setting = require('../models/Setting');
+const Service = require('../models/Service');
 const { isActiveUser } = require('../middleware/auth');
 const multer = require('multer');
 
@@ -17,15 +18,57 @@ const upload = multer({ storage });
 
 router.get('/dashboard', isActiveUser, async (req, res) => {
   const user = await User.findById(req.session.user._id);
-  const products = await Product.find();
+  const services = await Service.find({ active: true }).sort('category sortOrder');
   const setting = await Setting.findOne() || {};
   const unread = await Notice.countDocuments({ user: user._id, read: false });
-  res.render('user/dashboard', {
-    user, products, setting, unread,
-    bigProducts: products.filter(p => p.big),
-    smallProducts: products.filter(p => !p.big)
-  });
+  res.render('user/dashboard', { user, services, setting, unread });
 });
+
+router.get('/service/:id', isActiveUser, async (req, res) => {
+  const service = await Service.findById(req.params.id);
+  const user = await User.findById(req.session.user._id);
+  if (!service || !service.active) return res.redirect('/user/dashboard');
+  res.render('user/service-form', { service, user, setting: await Setting.findOne() || {} });
+});
+
+router.post('/service/:id', isActiveUser, async (req, res) => {
+  try {
+    const service = await Service.findById(req.params.id);
+    const user = await User.findById(req.session.user._id);
+    if (!service || !service.active) return res.redirect('/user/dashboard');
+
+    const { optionIndex, details } = req.body;
+    const option = service.options[parseInt(optionIndex)];
+    if (!option) {
+      req.flash('error', 'দয়া করে অপশন সিলেক্ট করুন');
+      return res.redirect('/user/service/' + service._id);
+    }
+
+    if (user.balance < option.price) {
+      req.flash('error', 'দয়া করে রিচার্জ করুন');
+      return res.redirect('/user/recharge');
+    }
+
+    user.balance -= option.price;
+    await user.save();
+
+    await Order.create({
+      user: user._id,
+      service: service._id,
+      selectedOption: option.label,
+      selectedPrice: option.price,
+      details: details || '',
+      price: option.price
+    });
+
+    req.flash('success', `✅ অর্ডার সফল! স্টেটাস: পেন্ডিং`);
+    res.redirect('/user/orders');
+  } catch (e) {
+    req.flash('error', 'সমস্যা: ' + e.message);
+    res.redirect('/user/dashboard');
+  }
+});
+
 
 router.get('/order/:id', isActiveUser, async (req, res) => {
   const product = await Product.findById(req.params.id);
