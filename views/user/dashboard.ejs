@@ -1,0 +1,53 @@
+<%- include('../partials/head', { cssFile: 'dashboard.css', bodyClass: 'dash', siteName: setting.siteName }) %>
+
+<div class="topbar">
+  <div class="left"><a href="/logout" class="logout">➜ লগআউট</a></div>
+  <div class="right">
+    <div class="balance-chip">💼 <div><small>ব্যালেন্স</small><b>৳ <%= user.balance.toFixed(2) %></b></div></div>
+    <a href="/user/recharge"><button class="btn-outline-green">💰 রিচার্জ</button></a>
+    <a href="/user/notices"><button class="btn-outline-green">🔔 নোটিশ</button></a>
+  </div>
+</div>
+
+<div class="banner">
+  <div class="user-info">
+    <div class="avatar">👤</div>
+    <div>
+      <h1>স্বাগতম, <%= user.name %> 👋</h1>
+      <p>আপনার প্রয়োজনীয় সেবাগুলো নিতে তালিকাভুক্ত করা হয়েছে।</p>
+    </div>
+  </div>
+  <div class="actions">
+    <a href="/user/recharge"><button class="btn-yellow">💼 রিচার্জ</button></a>
+    <a href="/user/profile"><button class="btn-ghost">👤 প্রোফাইল ➜</button></a>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">📦 আমাদের সেবাসমূহ</div>
+  <div class="big-grid">
+    <% (typeof bigProducts !== 'undefined' ? bigProducts : []).forEach(p => { %>
+      <a href="/user/order/<%= p._id %>" class="big-card">
+        <div class="ic-bg" style="background:<%= p.color %>20;color:<%= p.color %>"><%= p.icon %></div>
+        <h3><%= p.name %></h3>
+        <p><%= p.subtitle %></p>
+        <div class="arrow">➜</div>
+      </a>
+    <% }) %>
+  </div>
+
+  <div class="small-grid" style="margin-top:14px">
+    <% (typeof smallProducts !== 'undefined' ? smallProducts : []).forEach(p => { %>
+      <a href="/user/order/<%= p._id %>" class="small-card">
+        <div class="small-ic" style="background:<%= p.color %>20;color:<%= p.color %>"><%= p.icon %></div>
+        <div class="small-txt">
+          <h4><%= p.name %></h4>
+          <p><%= p.subtitle %></p>
+        </div>
+        <span class="small-arrow">➜</span>
+      </a>
+    <% }) %>
+  </div>
+</div>
+
+</body></html>
