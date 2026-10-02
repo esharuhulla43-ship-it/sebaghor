@@ -26,7 +26,7 @@
             🕐 সময়: <%= t.createdAt.toLocaleString('bn-BD') %>
           </p>
           <div style="display:flex;gap:8px;width:100%">
-            <form method="POST" action="/admin/recharges/approve/<%= t._id %>" style="flex:1" onsubmit="return confirm('৳<%= t.amount %> অনুমোদন করবেন?')">
+            <form method="POST" action="/admin/recharges/approve/<%= t._id %>" style="flex:1" onsubmit="return confirm('অনুমোদন করবেন?')">
               <button class="btn-yellow" style="width:100%;justify-content:center;font-size:13px;padding:10px">✅ কনফার্ম</button>
             </form>
             <form method="POST" action="/admin/recharges/reject/<%= t._id %>" style="flex:1" onsubmit="return confirm('বাতিল করবেন?')">
@@ -49,7 +49,7 @@
         <div class="small-card" style="cursor:default;padding:14px">
           <div class="small-txt">
             <h4><%= t.user.name %> — ৳<%= t.amount %></h4>
-            <p><%= t.method %> | <%= t.transactionId %> | <%= t.createdAt.toLocaleString('bn-BD') %></p>
+            <p><%= t.method %> | <%= t.transactionId %></p>
           </div>
         </div>
       <% }) %>

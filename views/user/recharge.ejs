@@ -9,13 +9,10 @@
   <div class="section-title">💰 ব্যালেন্স রিচার্জ</div>
 
   <div class="small-card" style="cursor:default;flex-direction:column;align-items:flex-start;gap:14px;padding:22px">
-    <p style="color:#64748b;font-size:14px">নিচের নাম্বারে <b>Send Money / Personal</b> করে টাকা পাঠান, তারপর ফর্ম পূরণ করুন।</p>
+    <p style="color:#64748b;font-size:14px">নিচের নাম্বারে Send Money করে টাকা পাঠান, তারপর ফর্ম পূরণ করুন।</p>
     <hr style="width:100%;border:none;border-top:1px solid #d1fae5">
     <div style="display:flex;justify-content:space-between;width:100%"><b>📱 বিকাশ (Personal)</b><span style="color:#10b981;font-weight:700"><%= setting.bkashNumber || '—' %></span></div>
     <div style="display:flex;justify-content:space-between;width:100%"><b>📱 নগদ (Personal)</b><span style="color:#10b981;font-weight:700"><%= setting.nagadNumber || '—' %></span></div>
-    <% if (setting.paymentNumber) { %>
-      <div style="display:flex;justify-content:space-between;width:100%"><b>📱 পেমেন্ট নাম্বার</b><span style="color:#10b981;font-weight:700"><%= setting.paymentNumber %></span></div>
-    <% } %>
     <hr style="width:100%;border:none;border-top:1px solid #d1fae5">
 
     <% if (error && error.length) { %><div class="flash error" style="width:100%"><%= error %></div><% } %>
@@ -39,43 +36,26 @@
   <% } else { %>
     <div class="small-grid">
       <% history.forEach(r => { %>
-
-<div class="small-card" style="cursor:default; flex-direction
-
-<div style="display: flex; justify-content:space-between;wi
-
-<b style="color:#10b981">৳ <%= r.amount %></b>
-
-<% if (r.status === 'approved') { %>
-
-<span style="padding:3px 10px;border-radius:20px;fon
-
-<% } else if (r.status === 'rejected') { %>
-
-<span style="padding:3px 10px;border-radius:20px;fon
-
-<% } else { %>
-
-<span style="padding:3px 10px;border-radius:20px;fon
-
-<% } %>
-
-</div>
-
-<p style="font-size:12.5px;color:#64748b">
-
-মেথড: <%= r.method %> | নাম্বার: <%= r.senderNumber
-
-TrxID: <%= r.transactionld %><br>
-
-<%= r.createdAt.toLocaleString('bn-BD') %>
-
-</p>
-
-</div>
-
-< % }) %>
+        <div class="small-card" style="cursor:default;flex-direction:column;align-items:flex-start;gap:6px;padding:16px">
+          <div style="display:flex;justify-content:space-between;width:100%">
+            <b style="color:#10b981">৳ <%= r.amount %></b>
+            <% if (r.status === 'approved') { %>
+              <span style="padding:3px 10px;border-radius:20px;font-size:11px;background:#d1fae5;color:#065f46;font-weight:700">✅ অনুমোদিত</span>
+            <% } else if (r.status === 'rejected') { %>
+              <span style="padding:3px 10px;border-radius:20px;font-size:11px;background:#fee2e2;color:#991b1b;font-weight:700">❌ বাতিল</span>
+            <% } else { %>
+              <span style="padding:3px 10px;border-radius:20px;font-size:11px;background:#fef3c7;color:#92400e;font-weight:700">⏳ পেন্ডিং</span>
+            <% } %>
+          </div>
+          <p style="font-size:12.5px;color:#64748b">
+            মেথড: <%= r.method %> | নাম্বার: <%= r.senderNumber %><br>
+            TrxID: <%= r.transactionId %><br>
+            <%= r.createdAt.toLocaleString('bn-BD') %>
+          </p>
+        </div>
+      <% }) %>
     </div>
   <% } %>
 </div>
+
 </body></html>
