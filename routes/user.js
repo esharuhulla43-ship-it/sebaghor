@@ -94,10 +94,13 @@ router.post('/order/:id', isActiveUser, async (req, res) => {
 
 router.get('/orders', isActiveUser, async (req, res) => {
   const orders = await Order.find({ user: req.session.user._id })
-    .populate('product').sort('-createdAt');
+    .populate('product')
+    .populate('service')
+    .sort('-createdAt');
   const user = await User.findById(req.session.user._id);
   res.render('user/orders', { orders, user });
 });
+
 
 router.get('/download/:orderId', isActiveUser, async (req, res) => {
   const o = await Order.findById(req.params.orderId).populate('product');
