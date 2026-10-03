@@ -1,15 +1,16 @@
 const mongoose = require('mongoose');
 
 const serviceSchema = new mongoose.Schema({
-  name: { type: String, required: true },          // সার্ভিসের নাম (যেমন: এনআইডি সার্ভিস)
-  category: { type: String, required: true },      // ক্যাটাগরি (যেমন: এনআইডি, সিম)
-  description: { type: String, default: '' },      // বর্ণনা
+  name: { type: String, required: true },
+  category: { type: String, required: true },
+  icon: { type: String, default: '🛠️' },
+  description: { type: String, default: '' },
   options: [{
-    label: { type: String, required: true },       // যেমন: "ফর্ম/ফোটার নং দিয়ে"
-    price: { type: Number, required: true }        // যেমন: 350
+    label: { type: String, required: true },
+    price: { type: Number, required: true }
   }],
-  active: { type: Boolean, default: true },        // অন/অফ
-  sortOrder: { type: Number, default: 0 },         // সাজানোর জন্য
+  active: { type: Boolean, default: true },
+  sortOrder: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now }
 });
 
