@@ -20,11 +20,10 @@ router.get('/dashboard', isActiveUser, async (req, res) => {
   const user = await User.findById(req.session.user._id);
   const services = await Service.find({ active: true }).sort('category sortOrder');
   const setting = await Setting.findOne() || {};
-  const unreadNotices = await Notice.find({ user: user._id, read: false }).sort('-createdAt');
+  const allNotices = await Notice.find({ user: user._id }).sort('-createdAt').limit(10);
   res.render('user/dashboard', {
     user, services, setting,
-    unread: unreadNotices.length,
-    unreadNotices
+    allNotices
   });
 });
 
