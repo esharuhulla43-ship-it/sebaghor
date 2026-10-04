@@ -20,8 +20,12 @@ router.get('/dashboard', isActiveUser, async (req, res) => {
   const user = await User.findById(req.session.user._id);
   const services = await Service.find({ active: true }).sort('category sortOrder');
   const setting = await Setting.findOne() || {};
-  const unread = await Notice.countDocuments({ user: user._id, read: false });
-  res.render('user/dashboard', { user, services, setting, unread });
+  const unreadNotices = await Notice.find({ user: user._id, read: false }).sort('-createdAt');
+  res.render('user/dashboard', {
+    user, services, setting,
+    unread: unreadNotices.length,
+    unreadNotices
+  });
 });
 
 router.get('/service/:id', isActiveUser, async (req, res) => {
@@ -203,6 +207,14 @@ router.post('/change-password/save', isActiveUser, async (req, res) => {
   req.session.pwOk = false;
   req.flash('success', '✅ পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে');
   res.redirect('/user/profile');
+});
+// সব নোটিশ read হিসেবে মার্ক করুন
+router.post('/notices/read-all', isActiveUser, async (req, res) => {
+  await Notice.updateMany(
+    { user: req.session.user._id, read: false },
+    { read: true }
+  );
+  res.json({ ok: true });
 });
 
 module.exports = router;

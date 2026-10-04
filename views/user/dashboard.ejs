@@ -43,5 +43,28 @@
     </div>
   <% } %>
 </div>
+<% if (unreadNotices && unreadNotices.length > 0) { %>
+<div class="notice-popup show" id="noticePopup">
+  <div class="notice-popup-card">
+    <h3>📢 নতুন নোটিশ (<%= unreadNotices.length %>)</h3>
+    <div class="notices-list">
+      <% unreadNotices.forEach(n => { %>
+        <div class="notice-item">
+          <p><%= n.message %></p>
+          <small>🕐 <%= n.createdAt.toLocaleString('bn-BD') %></small>
+        </div>
+      <% }) %>
+    </div>
+    <button class="close-btn" onclick="ackNotices()">✅ বুঝেছি</button>
+  </div>
+</div>
 
+<script>
+function ackNotices() {
+  fetch('/user/notices/read-all', { method: 'POST' })
+    .then(() => document.getElementById('noticePopup').classList.remove('show'))
+    .catch(() => document.getElementById('noticePopup').classList.remove('show'));
+}
+</script>
+<% } %>
 </body></html>
