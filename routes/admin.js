@@ -236,5 +236,21 @@ router.post('/services/delete/:id', isAdmin, async (req, res) => {
   req.flash('success', '🗑️ সার্ভিস ডিলিট হয়েছে');
   res.redirect('/admin/services');
 });
+// অর্ডার ডিলিট
+router.post('/orders/delete/:id', isAdmin, async (req, res) => {
+  try {
+    const o = await Order.findById(req.params.id);
+    if (!o) {
+      req.flash('error', 'অর্ডার পাওয়া যায়নি');
+      return res.redirect('/admin/dashboard#orders');
+    }
+    await Order.findByIdAndDelete(req.params.id);
+    req.flash('success', '🗑️ অর্ডার ডিলিট হয়েছে');
+    res.redirect('/admin/dashboard#orders');
+  } catch (e) {
+    req.flash('error', 'সমস্যা: ' + e.message);
+    res.redirect('/admin/dashboard#orders');
+  }
+});
 
 module.exports = router;

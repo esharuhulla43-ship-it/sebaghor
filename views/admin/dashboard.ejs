@@ -122,6 +122,9 @@
       </form>
     <% } %>
   </div>
+  <form method="POST" action="/admin/orders/delete/<%= o._id %>" onsubmit="return confirm('অর্ডারটি ডিলিট করবেন?\n\n⚠️ ইউজার আর এই অর্ডার দেখতে পাবে না।')" style="width:100%;margin-top:8px">
+  <button class="btn-ghost" style="width:100%;justify-content:center;font-size:12px;padding:8px;background:#dc2626;border-color:#dc2626;color:#fff">🗑️ অর্ডার ডিলিট করুন</button>
+</form>
 <% }) %>
   </div>
 </div>
