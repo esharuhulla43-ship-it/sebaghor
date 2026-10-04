@@ -3,7 +3,7 @@
 <div class="topbar">
   <div class="left"><a href="/logout" class="logout">➜ লগআউট</a></div>
   <div class="right">
-    <div class="balance-chip">💼 <div><small>ব্যালেন্স দেখুন</small><b>৳ <%= user.balance.toFixed(2) %></b></div></div>
+    <div class="balance-chip">💼 <div><small>My Balance</small><b>৳ <%= user.balance.toFixed(2) %></b></div></div>
     <a href="/user/recharge"><button class="btn-outline-green">💰 এখানে টাকা দেখাবে</button></a>
     <a href="/user/notices" style="position:relative">
       <button class="btn-outline-green">🔔 নোটিশ <% if(unread){ %><span style="background:#dc2626;color:#fff;border-radius:10px;padding:1px 7px;font-size:11px"><%= unread %></span><% } %></button>
