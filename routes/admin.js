@@ -110,10 +110,10 @@ router.post('/notice/:userId', isAdmin, async (req, res) => {
 });
 
 router.post('/settings', isAdmin, async (req, res) => {
-  const { siteName, tagline, bkashNumber, nagadNumber, paymentNumber, whatsappSupport, whatsappAdmin } = req.body;
+  const { siteName, tagline, bkashNumber, nagadNumber, paymentNumber, whatsappSupport, whatsappAdmin, marqueeText } = req.body;
   let s = await Setting.findOne();
   if (!s) s = new Setting();
-  Object.assign(s, { siteName, tagline, bkashNumber, nagadNumber, paymentNumber, whatsappSupport, whatsappAdmin });
+  Object.assign(s, { siteName, tagline, bkashNumber, nagadNumber, paymentNumber, whatsappSupport, whatsappAdmin, marqueeText });
   await s.save();
   req.flash('success', '✅ সেটিংস সেভ হয়েছে');
   res.redirect('/admin/dashboard#settings');

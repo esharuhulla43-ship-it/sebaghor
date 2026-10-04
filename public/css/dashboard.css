@@ -201,3 +201,50 @@ a{text-decoration:none;color:inherit}
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(16,185,129,.5);
 }
+/* স্ক্রলিং নোটিশ বার */
+.marquee-bar {
+  background: linear-gradient(90deg, #0f5132, #059669, #0f5132);
+  color: #fff;
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,.2);
+}
+.marquee-label {
+  background: #dc2626;
+  color: #fff;
+  padding: 6px 14px;
+  font-size: 18px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-right: 12px;
+  border-radius: 0 20px 20px 0;
+  box-shadow: 2px 0 10px rgba(220,38,38,.5);
+}
+.marquee-track {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  height: 22px;
+}
+.marquee-text {
+  position: absolute;
+  white-space: nowrap;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  animation: marqueeScroll 25s linear infinite;
+  padding-left: 100%;
+  letter-spacing: .3px;
+}
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+.marquee-bar:hover .marquee-text {
+  animation-play-state: paused;
+}
