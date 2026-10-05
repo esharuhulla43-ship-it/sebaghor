@@ -43,7 +43,7 @@ function formatDateTime(date) {
   </div>
 </div>
 <!-- অ্যাডমিন সাপোর্ট বাটন -->
-<a href="https://wa.me/<%= (setting.whatsappAdmin || '').replace(/\D/g, '') %>?text=<%= encodeURIComponent('আসসালামু আলাইকুম, আমি ' + user.name + '। আমার একটু সাপোর্ট প্রয়োজন।') %>" target="_blank" class="support-btn">
+<a href="https://wa.me/<%= (setting.whatsappAdmin || '').replace(/\D/g, '') %>?text=<%= encodeURIComponent('আসসালামু আলাইকুম ' + user.name + ', আমার একটি সমস্যা হয়েছে এটা সমাধান করে দেন') %>" target="_blank" class="support-btn">
   <span class="support-icon">💬</span>
   <span class="support-text">অ্যাডমিন সাপোর্ট</span>
 </a>
