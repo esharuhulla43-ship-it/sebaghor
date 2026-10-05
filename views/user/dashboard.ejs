@@ -1,5 +1,4 @@
 <%
-// তারিখ ফরম্যাটার — বাংলাদেশ সময় (UTC+6)
 function formatDateTime(date) {
   const d = new Date(date);
   const bdTime = new Date(d.getTime() + (6 * 60 * 60 * 1000));
@@ -18,20 +17,16 @@ function formatDateTime(date) {
   return day + '/' + month + '/' + year + ' ' + hoursStr + ':' + minutes + ':' + seconds + ' ' + ampm + ' — ' + dayName;
 }
 
-// WhatsApp নাম্বার ঠিক করা — অটো ৮৮ যোগ
 let adminWA = ((setting && setting.whatsappAdmin) || '').replace(/\D/g, '');
 if (adminWA.startsWith('01')) {
-  adminWA = '88' + adminWA;                    // 01XXXXXXXXX → 8801XXXXXXXXX
+  adminWA = '88' + adminWA;
 } else if (adminWA.startsWith('1') && adminWA.length === 10) {
-  adminWA = '88' + adminWA;                    // 1XXXXXXXXX → 881XXXXXXXXX
+  adminWA = '88' + adminWA;
 } else if (!adminWA.startsWith('88') && adminWA.length > 0) {
-  adminWA = '88' + adminWA;                    // অন্য কিছু হলে ৮৮ যোগ
+  adminWA = '88' + adminWA;
 }
 
-// WhatsApp মেসেজ তৈরি
 const waMessage = 'আসসালামু আলাইকুম ' + user.name + ', আমার একটি সমস্যা হয়েছে এটা সমাধান করে দেন';
-
-// WhatsApp লিংক
 const waLink = adminWA
   ? 'https://api.whatsapp.com/send?phone=' + adminWA + '&text=' + encodeURIComponent(waMessage)
   : 'https://api.whatsapp.com/send?text=' + encodeURIComponent(waMessage);
@@ -70,23 +65,7 @@ const waLink = adminWA
   </div>
 </div>
 
-<% if (allNotices && allNotices.length > 0) { %>
-<div class="section">
-  <div class="section-title">📢 নোটিশ বোর্ড</div>
-  <div class="notice-board">
-    <% allNotices.forEach(n => { %>
-      <div class="notice-board-item">
-        <div class="notice-icon">📢</div>
-        <div class="notice-content">
-          <p><%= n.message %></p>
-          <small>🕐 <%= formatDateTime(n.createdAt) %></small>
-        </div>
-      </div>
-    <% }) %>
-  </div>
-</div>
-<% } %>
-
+<!-- ============= সেবাসমূহ (এখন উপরে) ============= -->
 <div class="section">
   <div class="section-title">📦 আমাদের সেবাসমূহ</div>
 
@@ -118,6 +97,24 @@ const waLink = adminWA
     </div>
   <% } %>
 </div>
+
+<!-- ============= নোটিশ বোর্ড (এখন নিচে) ============= -->
+<% if (allNotices && allNotices.length > 0) { %>
+<div class="section">
+  <div class="section-title">📢 নোটিশ বোর্ড</div>
+  <div class="notice-board">
+    <% allNotices.forEach(n => { %>
+      <div class="notice-board-item">
+        <div class="notice-icon">📢</div>
+        <div class="notice-content">
+          <p><%= n.message %></p>
+          <small>🕐 <%= formatDateTime(n.createdAt) %></small>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+<% } %>
 
 <!-- অ্যাডমিন সাপোর্ট ফ্লোটিং বাটন -->
 <a href="<%- waLink %>" target="_blank" class="support-btn">
