@@ -38,15 +38,26 @@
   <% } else { %>
     <div class="small-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">
       <% services.forEach(s => { %>
-        <a href="/user/service/<%= s._id %>" class="small-card" style="padding:16px">
-          <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ecfdf5,#d1fae5);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0"><%= s.icon || '🛠️' %></div>
-          <div class="small-txt" style="flex:1">
-            <h4 style="font-size:14.5px;font-weight:800"><%= s.name %></h4>
-            <p style="font-size:11.5px"><%= s.category %></p>
-          </div>
-          <span class="small-arrow">➜</span>
-        </a>
-      <% }) %>
+  <% if (s.active) { %>
+    <a href="/user/service/<%= s._id %>" class="small-card" style="padding:16px">
+      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ecfdf5,#d1fae5);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0"><%= s.icon || '🛠️' %></div>
+      <div class="small-txt" style="flex:1">
+        <h4 style="font-size:14.5px;font-weight:800"><%= s.name %></h4>
+        <p style="font-size:11.5px"><%= s.category %></p>
+      </div>
+      <span class="small-arrow">➜</span>
+    </a>
+  <% } else { %>
+    <div class="small-card" style="padding:16px;opacity:.7;cursor:not-allowed;border:2px dashed #dc2626;background:#fef2f2">
+      <div style="width:52px;height:52px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;filter:grayscale(1)"><%= s.icon || '🛠️' %></div>
+      <div class="small-txt" style="flex:1">
+        <h4 style="font-size:14.5px;font-weight:800;color:#991b1b"><%= s.name %></h4>
+        <p style="font-size:11.5px;color:#dc2626;font-weight:600">🚫 সার্ভিস বন্ধ</p>
+      </div>
+      <span style="font-size:11px;background:#dc2626;color:#fff;padding:4px 10px;border-radius:20px;font-weight:700;white-space:nowrap">বন্ধ</span>
+    </div>
+  <% } %>
+<% }) %>
     </div>
   <% } %>
 </div>

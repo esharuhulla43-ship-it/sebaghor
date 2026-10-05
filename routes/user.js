@@ -18,7 +18,7 @@ const upload = multer({ storage });
 
 router.get('/dashboard', isActiveUser, async (req, res) => {
   const user = await User.findById(req.session.user._id);
-  const services = await Service.find({ active: true }).sort('category sortOrder');
+const services = await Service.find().sort('category sortOrder');
   const setting = await Setting.findOne() || {};
   const allNotices = await Notice.find({ user: user._id }).sort('-createdAt').limit(10);
   res.render('user/dashboard', {
