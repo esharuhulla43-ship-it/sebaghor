@@ -1,17 +1,13 @@
 <%
+// তারিখ ফরম্যাটার — বাংলাদেশ সময় (UTC+6)
 function formatDateTime(date) {
   const d = new Date(date);
-  
-  // বাংলাদেশ সময় (UTC+6)
   const bdTime = new Date(d.getTime() + (6 * 60 * 60 * 1000));
-  
   const days = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
   const dayName = days[bdTime.getUTCDay()];
-
   const day = String(bdTime.getUTCDate()).padStart(2, '0');
   const month = String(bdTime.getUTCMonth() + 1).padStart(2, '0');
   const year = bdTime.getUTCFullYear();
-
   let hours = bdTime.getUTCHours();
   const minutes = String(bdTime.getUTCMinutes()).padStart(2, '0');
   const seconds = String(bdTime.getUTCSeconds()).padStart(2, '0');
@@ -19,9 +15,15 @@ function formatDateTime(date) {
   hours = hours % 12;
   hours = hours ? hours : 12;
   const hoursStr = String(hours).padStart(2, '0');
-
   return day + '/' + month + '/' + year + ' ' + hoursStr + ':' + minutes + ':' + seconds + ' ' + ampm + ' — ' + dayName;
 }
+
+// WhatsApp সাপোর্ট লিংক তৈরি
+const waNumber = ((setting && setting.whatsappAdmin) || '').replace(/\D/g, '');
+const waMessage = 'আসসালামু আলাইকুম ' + user.name + ', আমার একটি সমস্যা হয়েছে এটা সমাধান করে দেন';
+const waLink = waNumber 
+  ? 'https://api.whatsapp.com/send?phone=' + waNumber + '&text=' + encodeURIComponent(waMessage)
+  : 'https://api.whatsapp.com/send?text=' + encodeURIComponent(waMessage);
 %>
 <%- include('../partials/head', { cssFile: 'dashboard.css', bodyClass: 'dash' }) %>
 
@@ -42,11 +44,7 @@ function formatDateTime(date) {
     <a href="/user/orders"><button class="btn-outline-green">🧾 অর্ডার</button></a>
   </div>
 </div>
-<!-- অ্যাডমিন সাপোর্ট বাটন -->
-<a href="https://wa.me/<%= (setting.whatsappAdmin || '').replace(/\D/g, '') %>?text=<%= encodeURIComponent('আসসালামু আলাইকুম ' + user.name + ', আমার একটি সমস্যা হয়েছে এটা সমাধান করে দেন') %>" target="_blank" class="support-btn">
-  <span class="support-icon">💬</span>
-  <span class="support-text">অ্যাডমিন সাপোর্ট</span>
-</a>
+
 <div class="banner">
   <div class="user-info">
     <div class="avatar">👤</div>
@@ -109,5 +107,11 @@ function formatDateTime(date) {
     </div>
   <% } %>
 </div>
+
+<!-- অ্যাডমিন সাপোর্ট ফ্লোটিং বাটন -->
+<a href="<%- waLink %>" target="_blank" class="support-btn">
+  <span class="support-icon">💬</span>
+  <span class="support-text">অ্যাডমিন সাপোর্ট</span>
+</a>
 
 </body></html>
