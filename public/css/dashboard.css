@@ -248,3 +248,58 @@ a{text-decoration:none;color:inherit}
 .marquee-bar:hover .marquee-text {
   animation-play-state: paused;
 }
+/* অ্যাডমিন সাপোর্ট ফ্লোটিং বাটন */
+.support-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 15px;
+  font-family: inherit;
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5);
+  z-index: 9998;
+  transition: all .3s ease;
+  animation: supportPulse 2s ease-in-out infinite;
+}
+.support-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 35px rgba(37, 211, 102, 0.7);
+}
+.support-icon {
+  font-size: 22px;
+  animation: bellRing 2s ease-in-out infinite;
+}
+.support-text {
+  white-space: nowrap;
+}
+@keyframes supportPulse {
+  0%, 100% { box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5); }
+  50% { box-shadow: 0 8px 35px rgba(37, 211, 102, 0.8); }
+}
+@keyframes bellRing {
+  0%, 100% { transform: rotate(0deg); }
+  10% { transform: rotate(15deg); }
+  20% { transform: rotate(-15deg); }
+  30% { transform: rotate(10deg); }
+  40% { transform: rotate(-10deg); }
+  50% { transform: rotate(0deg); }
+}
+@media(max-width: 480px) {
+  .support-btn {
+    bottom: 16px;
+    right: 16px;
+    padding: 12px 18px;
+    font-size: 13px;
+  }
+  .support-icon {
+    font-size: 18px;
+  }
+}
