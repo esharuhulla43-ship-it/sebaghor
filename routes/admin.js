@@ -82,6 +82,7 @@ router.post('/orders/complete/:id', isAdmin,
         const pdfData = fs.readFileSync(pdf.path);
         updateData.adminPdfData = pdfData.toString('base64');
         updateData.adminPdfName = pdf.originalname;
+        updateData.adminPdfMime = pdf.mimetype || 'application/octet-stream';
         fs.unlinkSync(pdf.path);
       }
 
@@ -90,6 +91,7 @@ router.post('/orders/complete/:id', isAdmin,
         const imgData = fs.readFileSync(img.path);
         updateData.adminImageData = imgData.toString('base64');
         updateData.adminImageName = img.originalname;
+        updateData.adminImageMime = img.mimetype || 'application/octet-stream';
         fs.unlinkSync(img.path);
       }
 

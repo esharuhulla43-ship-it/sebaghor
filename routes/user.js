@@ -113,24 +113,82 @@ router.get('/download/:orderId', isActiveUser, async (req, res) => {
     return res.status(403).send('Unauthorized');
   if (o.status !== 'completed') return res.send('ফাইল এখনো প্রস্তুত হয়নি');
 
+  // ফাইলের ধরন ঠিক করার ফাংশন
+  function getMimeType(fileName, savedMime) {
+    if (savedMime && savedMime !== 'application/octet-stream') {
+      return savedMime;
+    }
+    if (!fileName) return 'application/octet-stream';
+    
+    const ext = fileName.toLowerCase().split('.').pop();
+    const mimes = {
+      pdf: 'application/pdf',
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      png: 'image/png',
+      gif: 'image/gif',
+      webp: 'image/webp',
+      svg: 'image/svg+xml',
+      bmp: 'image/bmp',
+      ico: 'image/x-icon',
+      txt: 'text/plain; charset=utf-8',
+      doc: 'application/msword',
+      docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      xls: 'application/vnd.ms-excel',
+      xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      ppt: 'application/vnd.ms-powerpoint',
+      pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      zip: 'application/zip',
+      rar: 'application/x-rar-compressed',
+      '7z': 'application/x-7z-compressed',
+      apk: 'application/vnd.android.package-archive',
+      exe: 'application/x-msdownload',
+      msi: 'application/x-msi',
+      dmg: 'application/x-apple-diskimage',
+      mp3: 'audio/mpeg',
+      wav: 'audio/wav',
+      mp4: 'video/mp4',
+      avi: 'video/x-msvideo',
+      mkv: 'video/x-matroska',
+      json: 'application/json',
+      xml: 'application/xml',
+      csv: 'text/csv',
+      html: 'text/html',
+      css: 'text/css',
+      js: 'application/javascript'
+    };
+    return mimes[ext] || 'application/octet-stream';
+  }
+
+  // ফাইল ১ — PDF/যেকোনো ফাইল
   if (o.adminPdfData) {
     const buffer = Buffer.from(o.adminPdfData, 'base64');
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${o.adminPdfName || 'file.pdf'}"`);
+    const fileName = o.adminPdfName || 'file';
+    const mime = getMimeType(fileName, o.adminPdfMime);
+    
+    res.setHeader('Content-Type', mime);
+    res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileName)}"`);
+    res.setHeader('Content-Length', buffer.length);
     return res.send(buffer);
   }
 
+  // ফাইল ২ — Image/যেকোনো ফাইল
   if (o.adminImageData) {
     const buffer = Buffer.from(o.adminImageData, 'base64');
-    res.setHeader('Content-Type', 'image/jpeg');
-    res.setHeader('Content-Disposition', `attachment; filename="${o.adminImageName || 'image.jpg'}"`);
+    const fileName = o.adminImageName || 'file';
+    const mime = getMimeType(fileName, o.adminImageMime);
+    
+    res.setHeader('Content-Type', mime);
+    res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileName)}"`);
+    res.setHeader('Content-Length', buffer.length);
     return res.send(buffer);
   }
 
+  // টেক্সট ফাইল
   if (o.adminText) {
     const fileName = o.service ? o.service.name : (o.product ? o.product.name : 'file');
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    res.setHeader('Content-Disposition', `attachment; filename="${fileName}.txt"`);
+    res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileName + '.txt')}"`);
     return res.send(o.adminText);
   }
 
