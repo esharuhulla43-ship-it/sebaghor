@@ -8,18 +8,15 @@ const orderSchema = new mongoose.Schema({
   selectedPrice: { type: Number, default: 0 },
   details: { type: String, default: '' },
   price: Number,
-  status: { type: String, enum: ['pending', 'completed'], default: 'pending' },
+  status: { type: String, enum: ['pending', 'completed', 'cancelled'], default: 'pending' },
+  cancelReason: { type: String, default: '' },
   
-  // ফাইল ১ (PDF/যেকোনো)
   adminPdfData: String,
   adminPdfName: String,
   adminPdfMime: String,
-  
-  // ফাইল ২ (Image/যেকোনো)
   adminImageData: String,
   adminImageName: String,
   adminImageMime: String,
-  
   adminText: String,
   createdAt: { type: Date, default: Date.now }
 });

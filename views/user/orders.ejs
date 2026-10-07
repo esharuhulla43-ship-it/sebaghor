@@ -2,7 +2,7 @@
 
 <div class="topbar">
   <div class="left"><a href="/user/dashboard" style="color:#0f5132;font-weight:700">⬅ ফিরে যান</a></div>
-  <div class="right"><div class="balance-chip">💼 <div><small>ব্যালেন্স</small><b>৳ <%= user.balance.toFixed(2) %></b></div></div></div>
+  <div class="right"><div class="balance-chip">💼 <div><small>My Balance</small><b>৳ <%= user.balance.toFixed(2) %></b></div></div></div>
 </div>
 
 <div class="section">
@@ -13,7 +13,21 @@
   <% } else { %>
     <div class="small-grid">
       <% orders.forEach(o => { %>
-        <div class="small-card" style="cursor:default;flex-direction:column;align-items:flex-start;gap:8px;padding:18px">
+        <% 
+          let statusText = '';
+          let statusColor = '';
+          if (o.status === 'completed') {
+            statusText = '✅ কমপ্লিট';
+            statusColor = 'background:#d1fae5;color:#065f46';
+          } else if (o.status === 'cancelled') {
+            statusText = '❌ ক্যান্সেল';
+            statusColor = 'background:#fee2e2;color:#991b1b';
+          } else {
+            statusText = '⏳ পেন্ডিং';
+            statusColor = 'background:#fef3c7;color:#92400e';
+          }
+        %>
+        <div class="small-card" style="cursor:default;flex-direction:column;align-items:flex-start;gap:8px;padding:18px;<%= o.status === 'cancelled' ? 'border:2px dashed #dc2626;background:#fef2f2;opacity:.85' : '' %>">
           <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
             <b>
               <% if (o.service) { %>
@@ -24,8 +38,8 @@
                 ❓ অর্ডার
               <% } %>
             </b>
-            <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;<%= o.status === 'completed' ? 'background:#d1fae5;color:#065f46' : 'background:#fef3c7;color:#92400e' %>">
-              <%= o.status === 'completed' ? '✅ কমপ্লিট' : '⏳ পেন্ডিং' %>
+            <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;<%= statusColor %>">
+              <%= statusText %>
             </span>
           </div>
           <p style="font-size:13px;color:#64748b">
@@ -34,6 +48,13 @@
             <% if (o.details) { %>📋 বিস্তারিত: <%= o.details %><br><% } %>
             🕐 <%= o.createdAt ? o.createdAt.toLocaleString('bn-BD') : '' %>
           </p>
+
+          <% if (o.status === 'cancelled') { %>
+            <div style="width:100%;background:#fff;border-left:4px solid #dc2626;padding:12px;border-radius:8px">
+              <b style="color:#dc2626;font-size:12px">❌ ক্যান্সেল কারণ:</b>
+              <p style="font-size:13px;color:#0f172a;margin-top:4px"><%= o.cancelReason || 'কারণ উল্লেখ করা হয়নি' %></p>
+            </div>
+          <% } %>
 
           <% if (o.status === 'completed') { %>
             <a href="/user/download/<%= o._id %>" style="width:100%">

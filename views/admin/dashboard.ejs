@@ -41,9 +41,8 @@
   <% } else { %>
     <div class="small-grid">
       <% orders.forEach(o => { %>
-        <div class="small-card" style="cursor:default;flex-direction:column;align-items:flex-start;gap:10px;padding:18px">
+        <div class="small-card" style="cursor:default;flex-direction:column;align-items:flex-start;gap:10px;padding:18px;<%= o.status === 'cancelled' ? 'border:2px dashed #dc2626;background:#fef2f2;opacity:.85' : '' %>">
           
-          <!-- হেডার -->
           <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
             <b style="font-size:14px">
               <% if (o.service) { %>
@@ -54,12 +53,11 @@
                 ❓ অজানা
               <% } %>
             </b>
-            <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;<%= o.status === 'completed' ? 'background:#d1fae5;color:#065f46' : 'background:#fef3c7;color:#92400e' %>">
-              <%= o.status === 'completed' ? '✅ কমপ্লিট' : '⏳ পেন্ডিং' %>
+            <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;<%= o.status === 'completed' ? 'background:#d1fae5;color:#065f46' : (o.status === 'cancelled' ? 'background:#fee2e2;color:#991b1b' : 'background:#fef3c7;color:#92400e') %>">
+              <%= o.status === 'completed' ? '✅ কমপ্লিট' : (o.status === 'cancelled' ? '❌ ক্যান্সেল' : '⏳ পেন্ডিং') %>
             </span>
           </div>
 
-          <!-- ইউজার ইনফো -->
           <p style="font-size:13px;color:#64748b;width:100%">
             👤 <%= o.user ? o.user.name : '?' %> | 📱 <%= o.user ? o.user.mobile : '-' %><br>
             💰 ৳ <%= o.price || o.selectedPrice || 0 %>
@@ -67,7 +65,13 @@
             <% if (o.details) { %><br>📋 <%= o.details %><% } %>
           </p>
 
-          <!-- কমপ্লিট ফর্ম (শুধু pending এ) -->
+          <% if (o.status === 'cancelled') { %>
+            <div style="width:100%;background:#fff;border-left:4px solid #dc2626;padding:10px;border-radius:8px">
+              <b style="color:#dc2626;font-size:12px">❌ ক্যান্সেল কারণ:</b>
+              <p style="font-size:12px;color:#0f172a;margin-top:4px"><%= o.cancelReason || 'কারণ নেই' %></p>
+            </div>
+          <% } %>
+
           <% if (o.status === 'pending') { %>
             <form method="POST" action="/admin/orders/complete/<%= o._id %>" enctype="multipart/form-data" style="display:flex;flex-direction:column;gap:6px;width:100%">
               <textarea name="adminText" placeholder="টেক্সট (ঐচ্ছিক)" style="padding:7px;border:1px solid #d1fae5;border-radius:6px;font-family:inherit;font-size:12px" rows="2"></textarea>
@@ -75,18 +79,15 @@
               <input type="file" name="adminImage" style="font-size:11px">
               <button class="btn-yellow" style="justify-content:center;font-size:12px;padding:8px">✅ কমপ্লিট করুন</button>
             </form>
-          <% } %>
 
-          <!-- ক্যান্সেল ও রিফান্ড (শুধু pending এ) -->
-          <% if (o.status === 'pending') { %>
-            <form method="POST" action="/admin/orders/cancel/<%= o._id %>" onsubmit="return confirm('অর্ডার ক্যান্সেল করবেন?\n\n✅ ৳<%= o.price || o.selectedPrice || 0 %> অটো ইউজারের ব্যালেন্সে ফেরত যাবে।')" style="width:100%">
+            <form method="POST" action="/admin/orders/cancel/<%= o._id %>" style="width:100%;display:flex;flex-direction:column;gap:6px" onsubmit="return confirm('অর্ডার ক্যান্সেল করবেন?\n\n✅ ৳<%= o.price || o.selectedPrice || 0 %> অটো ইউজারের ব্যালেন্সে ফেরত যাবে।')">
+              <textarea name="cancelReason" placeholder="ক্যান্সেল করার কারণ লিখুন (যেমন: এই ফাইলটি বর্তমানে নেই)" required rows="2" style="padding:7px;border:1px solid #f59e0b;border-radius:6px;font-family:inherit;font-size:12px;resize:vertical"></textarea>
               <button class="btn-ghost" style="width:100%;justify-content:center;font-size:12px;padding:8px;background:#f59e0b;border-color:#f59e0b;color:#fff">↩️ ক্যান্সেল ও রিফান্ড</button>
             </form>
           <% } %>
 
-          <!-- ডিলিট -->
-          <form method="POST" action="/admin/orders/delete/<%= o._id %>" onsubmit="return confirm('অর্ডারটি ডিলিট করবেন?\n\n⚠️ ইউজার আর এই অর্ডার দেখতে পাবে না।')" style="width:100%">
-            <button class="btn-ghost" style="width:100%;justify-content:center;font-size:12px;padding:8px;background:#dc2626;border-color:#dc2626;color:#fff">🗑️ অর্ডার ডিলিট করুন</button>
+          <form method="POST" action="/admin/orders/delete/<%= o._id %>" onsubmit="return confirm('অর্ডারটি স্থায়ীভাবে ডিলিট করবেন?\n\n⚠️ ইউজার আর এই অর্ডার দেখতে পাবে না।')" style="width:100%">
+            <button class="btn-ghost" style="width:100%;justify-content:center;font-size:12px;padding:8px;background:#dc2626;border-color:#dc2626;color:#fff">🗑️ স্থায়ীভাবে ডিলিট</button>
           </form>
         </div>
       <% }) %>
