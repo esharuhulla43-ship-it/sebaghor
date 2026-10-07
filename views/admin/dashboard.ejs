@@ -8,132 +8,93 @@
 <% if (success && success.length) { %>
   <div class="section"><div style="background:#d1fae5;color:#065f46;padding:12px;border-radius:8px;text-align:center"><%= success %></div></div>
 <% } %>
+<% if (error && error.length) { %>
+  <div class="section"><div style="background:#fee2e2;color:#991b1b;padding:12px;border-radius:8px;text-align:center"><%= error %></div></div>
+<% } %>
 
+<!-- ============= ড্যাশবোর্ড ============= -->
 <div class="section">
   <div class="section-title">📊 ড্যাশবোর্ড</div>
-  <a href="/admin/recharges" class="btn-yellow" style="display:inline-flex;text-decoration:none;padding:12px 24px;margin-bottom:20px;font-size:15px">
-  💰 রিচার্জ ম্যানেজমেন্ট দেখুন
-</a>
   <div class="big-grid">
     <div class="big-card" style="cursor:default"><h3 style="font-size:28px;color:#10b981"><%= users.length %></h3><p>মোট ইউজার</p></div>
     <div class="big-card" style="cursor:default"><h3 style="font-size:28px;color:#10b981"><%= products.length %></h3><p>মোট প্রোডাক্ট</p></div>
     <div class="big-card" style="cursor:default"><h3 style="font-size:28px;color:#10b981"><%= orders.length %></h3><p>মোট অর্ডার</p></div>
-    <div class="big-card" style="cursor:default"><h3 style="font-size:28px;color:#10b981"><%= orders.filter(o=>o.status==='pending').length %></h3><p>পেন্ডিং অর্ডার</p></div>
+    <div class="big-card" style="cursor:default"><h3 style="font-size:28px;color:#f59e0b"><%= orders.filter(o=>o.status==='pending').length %></h3><p>পেন্ডিং অর্ডার</p></div>
   </div>
 </div>
 
-<div class="section" id="users">
-  <div class="section-title">👥 ইউজার ম্যানেজমেন্ট</div>
-  <div class="small-grid">
-    <% users.forEach(u => { %>
-      <div class="small-card" style="cursor:default;flex-direction:column;align-items:flex-start;gap:8px;padding:16px">
-        <div style="display:flex;justify-content:space-between;width:100%">
-          <b><%= u.name %></b>
-          <span style="font-size:11px;padding:2px 8px;border-radius:10px;<%= u.isActive ? 'background:#d1fae5;color:#065f46' : 'background:#fee2e2;color:#991b1b' %>"><%= u.isActive ? 'একটিভ' : 'ডিএকটিভ' %></span>
-        </div>
-        <p style="font-size:12px;color:#64748b">📱 <%= u.mobile %><br>✉ <%= u.email %><br>💰 ৳ <%= u.balance %></p>
-        <div style="display:flex;gap:6px;width:100%;flex-wrap:wrap">
-          <form method="POST" action="/admin/users/toggle/<%= u._id %>" style="flex:1">
-            <button class="btn-yellow" style="width:100%;justify-content:center;font-size:12px;padding:7px"><%= u.isActive ? 'ডিএকটিভ' : 'একটিভ' %></button>
-          </form>
-          <form method="POST" action="/admin/users/delete/<%= u._id %>" onsubmit="return confirm('ডিলিট?')" style="flex:1">
-            <button class="btn-ghost" style="width:100%;justify-content:center;font-size:12px;padding:7px;background:#dc2626;border-color:#dc2626;color:#fff">ডিলিট</button>
-          </form>
-        </div>
-        <form method="POST" action="/admin/notice/<%= u._id %>" style="display:flex;gap:6px;width:100%">
-          <input name="message" placeholder="নোটিশ লিখুন" required style="flex:1;padding:8px;border:1px solid #d1fae5;border-radius:8px;font-family:inherit;font-size:12px">
-          <button class="btn-yellow" style="font-size:12px;padding:7px 12px">পাঠান</button>
-        </form>
-      </div>
-    <% }) %>
-  </div>
-</div>
-
-<div class="section" id="products">
-  <div class="section-title">📦 প্রোডাক্ট ম্যানেজমেন্ট</div>
-  <div class="small-card" style="cursor:default;flex-direction:column;gap:10px;padding:20px;margin-bottom:16px">
-    <h3 style="font-size:16px;color:#0f5132">➕ নতুন প্রোডাক্ট যোগ করুন</h3>
-    <form method="POST" action="/admin/products/add" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%">
-      <input name="name" placeholder="প্রোডাক্ট নাম" required style="padding:10px;border:1px solid #d1fae5;border-radius:8px;font-family:inherit">
-      <input name="price" type="number" placeholder="দাম (৳)" required style="padding:10px;border:1px solid #d1fae5;border-radius:8px;font-family:inherit">
-      <input name="icon" placeholder="আইকন (যেমন: 📄)" style="padding:10px;border:1px solid #d1fae5;border-radius:8px;font-family:inherit">
-      <input name="color" placeholder="রঙ (যেমন: #2563eb)" style="padding:10px;border:1px solid #d1fae5;border-radius:8px;font-family:inherit">
-      <input name="subtitle" placeholder="সাবটেক্সট" style="grid-column:1/-1;padding:10px;border:1px solid #d1fae5;border-radius:8px;font-family:inherit">
-      <label style="grid-column:1/-1;font-size:13px"><input type="checkbox" name="big"> বড় কার্ড হিসেবে দেখান</label>
-      <button class="btn-yellow" style="grid-column:1/-1;justify-content:center;padding:11px">যোগ করুন</button>
-    </form>
-  </div>
-
-  <div class="small-grid">
-    <% products.forEach(p => { %>
-      <div class="small-card" style="cursor:default;flex-direction:column;gap:8px;padding:16px">
-        <div style="display:flex;justify-content:space-between;width:100%">
-          <b><%= p.icon %> <%= p.name %></b>
-          <span style="color:#10b981;font-weight:700">৳ <%= p.price %></span>
-        </div>
-        <p style="font-size:12px;color:#64748b"><%= p.subtitle %></p>
-        <form method="POST" action="/admin/products/edit/<%= p._id %>" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%">
-          <input name="name" value="<%= p.name %>" style="padding:7px;border:1px solid #d1fae5;border-radius:6px;font-size:12px">
-          <input name="price" type="number" value="<%= p.price %>" style="padding:7px;border:1px solid #d1fae5;border-radius:6px;font-size:12px">
-          <input name="icon" value="<%= p.icon %>" style="padding:7px;border:1px solid #d1fae5;border-radius:6px;font-size:12px">
-          <input name="color" value="<%= p.color %>" style="padding:7px;border:1px solid #d1fae5;border-radius:6px;font-size:12px">
-          <input name="subtitle" value="<%= p.subtitle %>" style="grid-column:1/-1;padding:7px;border:1px solid #d1fae5;border-radius:6px;font-size:12px">
-          <button class="btn-yellow" style="grid-column:1/-1;justify-content:center;font-size:12px;padding:7px">আপডেট</button>
-        </form>
-        <form method="POST" action="/admin/products/delete/<%= p._id %>" onsubmit="return confirm('ডিলিট?')">
-          <button class="btn-ghost" style="width:100%;justify-content:center;font-size:12px;padding:7px;background:#dc2626;border-color:#dc2626;color:#fff">ডিলিট</button>
-        </form>
-      </div>
-    <% }) %>
-  </div>
-</div>
-
-<div class="section" id="orders">
-  <div class="section-title">🧾 অর্ডার লিস্ট</div>
-  <div class="small-grid">
-    <% orders.forEach(o => { %>
-  <div class="small-card" style="cursor:default;flex-direction:column;gap:8px;padding:16px">
-    <div style="display:flex;justify-content:space-between;width:100%">
-      <b>
-        <% if (o.service) { %>
-          🛠️ <%= o.service.name %>
-        <% } else if (o.product) { %>
-          📦 <%= o.product.name %>
-        <% } else { %>
-          ❓ অজানা
-        <% } %>
-      </b>
-      <span style="font-size:11px;padding:2px 8px;border-radius:10px;<%= o.status==='completed' ? 'background:#d1fae5;color:#065f46' : 'background:#fef3c7;color:#92400e' %>">
-        <%= o.status === 'completed' ? '✅ কমপ্লিট' : '⏳ পেন্ডিং' %>
-      </span>
-    </div>
-    <p style="font-size:12px;color:#64748b">
-      👤 <%= o.user ? o.user.name : '?' %> | 📱 <%= o.user ? o.user.mobile : '-' %><br>
-      💰 ৳ <%= o.price || o.selectedPrice || 0 %>
-      <% if (o.selectedOption) { %><br>📝 <%= o.selectedOption %><% } %>
-      <% if (o.details) { %><br>📋 <%= o.details %><% } %>
-    </p>
-    <% if (o.status === 'pending') { %>
-      <form method="POST" action="/admin/orders/complete/<%= o._id %>" enctype="multipart/form-data" style="display:flex;flex-direction:column;gap:6px;width:100%">
-        <textarea name="adminText" placeholder="টেক্সট (ঐচ্ছিক)" style="padding:7px;border:1px solid #d1fae5;border-radius:6px;font-family:inherit;font-size:12px" rows="2"></textarea>
-        <input type="file" name="adminPdf" style="font-size:11px">
-        <input type="file" name="adminImage" style="font-size:11px">
-        <button class="btn-yellow" style="justify-content:center;font-size:12px;padding:8px">✅ কমপ্লিট করুন</button>
-      </form>
-    <% } %>
-  </div>
-  <form method="POST" action="/admin/orders/delete/<%= o._id %>" onsubmit="return confirm('অর্ডারটি ডিলিট করবেন?\n\n⚠️ ইউজার আর এই অর্ডার দেখতে পাবে না।')" style="width:100%;margin-top:8px">
-  <button class="btn-ghost" style="width:100%;justify-content:center;font-size:12px;padding:8px;background:#dc2626;border-color:#dc2626;color:#fff">🗑️ অর্ডার ডিলিট করুন</button>
-</form>
-<% }) %>
-  </div>
-</div>
+<!-- ============= কুইক লিংক ============= -->
 <div class="section" style="text-align:center">
-  <a href="/admin/services" class="btn-yellow" style="display:inline-flex;text-decoration:none;padding:14px 32px;margin-bottom:20px;font-size:16px">
+  <a href="/admin/services" class="btn-yellow" style="display:inline-flex;text-decoration:none;padding:12px 24px;margin:6px;font-size:15px">
     🛠️ সার্ভিস ম্যানেজমেন্ট
+  </a>
+  <a href="/admin/recharges" class="btn-yellow" style="display:inline-flex;text-decoration:none;padding:12px 24px;margin:6px;font-size:15px">
+    💰 রিচার্জ ম্যানেজমেন্ট
   </a>
 </div>
 
+<!-- ============= অর্ডার লিস্ট ============= -->
+<div class="section" id="orders">
+  <div class="section-title">🧾 অর্ডার লিস্ট</div>
+  <% if (!orders || orders.length === 0) { %>
+    <p style="color:#64748b">কোনো অর্ডার নেই।</p>
+  <% } else { %>
+    <div class="small-grid">
+      <% orders.forEach(o => { %>
+        <div class="small-card" style="cursor:default;flex-direction:column;align-items:flex-start;gap:10px;padding:18px">
+          
+          <!-- হেডার -->
+          <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
+            <b style="font-size:14px">
+              <% if (o.service) { %>
+                🛠️ <%= o.service.name %>
+              <% } else if (o.product) { %>
+                📦 <%= o.product.name %>
+              <% } else { %>
+                ❓ অজানা
+              <% } %>
+            </b>
+            <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;<%= o.status === 'completed' ? 'background:#d1fae5;color:#065f46' : 'background:#fef3c7;color:#92400e' %>">
+              <%= o.status === 'completed' ? '✅ কমপ্লিট' : '⏳ পেন্ডিং' %>
+            </span>
+          </div>
+
+          <!-- ইউজার ইনফো -->
+          <p style="font-size:13px;color:#64748b;width:100%">
+            👤 <%= o.user ? o.user.name : '?' %> | 📱 <%= o.user ? o.user.mobile : '-' %><br>
+            💰 ৳ <%= o.price || o.selectedPrice || 0 %>
+            <% if (o.selectedOption) { %><br>📝 <%= o.selectedOption %><% } %>
+            <% if (o.details) { %><br>📋 <%= o.details %><% } %>
+          </p>
+
+          <!-- কমপ্লিট ফর্ম (শুধু pending এ) -->
+          <% if (o.status === 'pending') { %>
+            <form method="POST" action="/admin/orders/complete/<%= o._id %>" enctype="multipart/form-data" style="display:flex;flex-direction:column;gap:6px;width:100%">
+              <textarea name="adminText" placeholder="টেক্সট (ঐচ্ছিক)" style="padding:7px;border:1px solid #d1fae5;border-radius:6px;font-family:inherit;font-size:12px" rows="2"></textarea>
+              <input type="file" name="adminPdf" style="font-size:11px">
+              <input type="file" name="adminImage" style="font-size:11px">
+              <button class="btn-yellow" style="justify-content:center;font-size:12px;padding:8px">✅ কমপ্লিট করুন</button>
+            </form>
+          <% } %>
+
+          <!-- ক্যান্সেল ও রিফান্ড (শুধু pending এ) -->
+          <% if (o.status === 'pending') { %>
+            <form method="POST" action="/admin/orders/cancel/<%= o._id %>" onsubmit="return confirm('অর্ডার ক্যান্সেল করবেন?\n\n✅ ৳<%= o.price || o.selectedPrice || 0 %> অটো ইউজারের ব্যালেন্সে ফেরত যাবে।')" style="width:100%">
+              <button class="btn-ghost" style="width:100%;justify-content:center;font-size:12px;padding:8px;background:#f59e0b;border-color:#f59e0b;color:#fff">↩️ ক্যান্সেল ও রিফান্ড</button>
+            </form>
+          <% } %>
+
+          <!-- ডিলিট -->
+          <form method="POST" action="/admin/orders/delete/<%= o._id %>" onsubmit="return confirm('অর্ডারটি ডিলিট করবেন?\n\n⚠️ ইউজার আর এই অর্ডার দেখতে পাবে না।')" style="width:100%">
+            <button class="btn-ghost" style="width:100%;justify-content:center;font-size:12px;padding:8px;background:#dc2626;border-color:#dc2626;color:#fff">🗑️ অর্ডার ডিলিট করুন</button>
+          </form>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<!-- ============= সাইট সেটিংস ============= -->
 <div class="section" id="settings">
   <div class="section-title">⚙️ সাইট সেটিংস</div>
   <div class="small-card" style="cursor:default;flex-direction:column;gap:10px;padding:20px">
@@ -145,11 +106,10 @@
       <input name="paymentNumber" value="<%= setting.paymentNumber || '' %>" placeholder="পেমেন্ট নাম্বার" style="padding:10px;border:1px solid #d1fae5;border-radius:8px;font-family:inherit">
       <input name="whatsappSupport" value="<%= setting.whatsappSupport || '' %>" placeholder="সাপোর্ট WhatsApp (8801...)" style="padding:10px;border:1px solid #d1fae5;border-radius:8px;font-family:inherit">
       <input name="whatsappAdmin" value="<%= setting.whatsappAdmin || '' %>" placeholder="এডমিন WhatsApp (8801...)" style="grid-column:1/-1;padding:10px;border:1px solid #d1fae5;border-radius:8px;font-family:inherit">
-     
-      <input name="marqueeText" value="<%= setting.marqueeText || '' %>" placeholder="মার্কিস টেক্সট" style="grid-column:1/-1;padding:10px;border:1px solid #d1fae5;border-radius:8px;font-family:inherit">
-      <button class="btn-yellow" style="grid-column:1/-1;justify-content:center;padding:11px">💾 সেভ করুন</button>
-
+      <input name="marqueeText" value="<%= setting.marqueeText || '' %>" placeholder="📢 স্ক্রলিং নোটিশ" style="grid-column:1/-1;padding:10px;border:1px solid #d1fae5;border-radius:8px;font-family:inherit">
+      <button class="btn-yellow" style="grid-column:1/-1;justify-content:center;padding:11px">💾 সেটিংস সেভ করুন</button>
     </form>
   </div>
 </div>
+
 </body></html>

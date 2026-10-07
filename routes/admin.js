@@ -255,4 +255,35 @@ router.post('/orders/delete/:id', isAdmin, async (req, res) => {
   }
 });
 
+// অর্ডার ক্যান্সেল — ব্যালেন্স ফেরত
+router.post('/orders/cancel/:id', isAdmin, async (req, res) => {
+  try {
+    const o = await Order.findById(req.params.id).populate('service').populate('product');
+    if (!o) {
+      req.flash('error', 'অর্ডার পাওয়া যায়নি');
+      return res.redirect('/admin/dashboard#orders');
+    }
+
+    if (o.status === 'completed') {
+      req.flash('error', 'কমপ্লিট অর্ডার ক্যান্সেল করা যাবে না');
+      return res.redirect('/admin/dashboard#orders');
+    }
+
+    const refundAmount = o.price || o.selectedPrice || 0;
+    const user = await User.findById(o.user);
+    if (user && refundAmount > 0) {
+      user.balance += refundAmount;
+      await user.save();
+    }
+
+    await Order.findByIdAndDelete(req.params.id);
+
+    req.flash('success', `✅ অর্ডার ক্যান্সেল হয়েছে — ৳${refundAmount} ব্যালেন্স ফেরত দেওয়া হয়েছে`);
+    res.redirect('/admin/dashboard#orders');
+  } catch (e) {
+    req.flash('error', 'সমস্যা: ' + e.message);
+    res.redirect('/admin/dashboard#orders');
+  }
+});
+
 module.exports = router;
