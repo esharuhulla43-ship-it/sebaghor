@@ -8,85 +8,112 @@
 <div class="section" style="max-width:1000px;margin:20px auto">
   <div class="section-title">✅ আপনার আইডি তৈরি হয়েছে</div>
 
+  <%
+    const pos = order.template.positions || {};
+    const getPos = (field) => {
+      const p = pos[field] || {};
+      return {
+        x: p.x !== undefined ? p.x : 20,
+        y: p.y !== undefined ? p.y : 50,
+        w: p.w !== undefined ? p.w : 14,
+        h: p.h !== undefined ? p.h : 12
+      };
+    };
+    const P = {
+      photo: getPos('photo'),
+      nameBangla: getPos('nameBangla'),
+      nameEnglish: getPos('nameEnglish'),
+      father: getPos('father'),
+      mother: getPos('mother'),
+      birthDate: getPos('birthDate'),
+      idNumber: getPos('idNumber'),
+      address: getPos('address'),
+      blood: getPos('blood'),
+      birthPlace: getPos('birthPlace'),
+      issueDate: getPos('issueDate'),
+      signature: getPos('signature')
+    };
+  %>
+
   <div id="idCard" style="position:relative;width:100%;max-width:1000px;margin:0 auto;background:#fff;border:1px solid #333;overflow:hidden;font-family:'Kalpurush','Hind Siliguri',sans-serif">
     <img src="/uploads/<%= order.template.templateImage %>" alt="Template" style="display:block;width:100%;height:auto;">
 
-    <!-- ছবি (বাম পাশে) -->
+    <!-- ছবি -->
     <% if (order.data.photoFile) { %>
-      <div style="position:absolute;top:31%;left:2.5%;width:15%;height:42%;overflow:hidden">
+      <div style="position:absolute;top:<%= P.photo.y %>%;left:<%= P.photo.x %>%;width:<%= P.photo.w %>%;height:<%= P.photo.h %>%;overflow:hidden">
         <img src="/uploads/<%= order.data.photoFile %>" alt="Photo" style="width:100%;height:100%;object-fit:cover;">
       </div>
     <% } %>
 
     <!-- নাম (বাংলা) -->
-    <div style="position:absolute;top:31%;left:22%;font-size:22px;font-weight:700;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif">
+    <div style="position:absolute;top:<%= P.nameBangla.y %>%;left:<%= P.nameBangla.x %>%;font-size:22px;font-weight:700;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif">
       <%= order.data.nameBangla %>
     </div>
 
     <!-- নাম (ইংরেজি) -->
     <% if (order.data.nameEnglish) { %>
-      <div style="position:absolute;top:40%;left:22%;font-size:20px;font-weight:600;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif">
+      <div style="position:absolute;top:<%= P.nameEnglish.y %>%;left:<%= P.nameEnglish.x %>%;font-size:20px;font-weight:600;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif">
         <%= order.data.nameEnglish %>
       </div>
     <% } %>
 
     <!-- পিতার নাম -->
     <% if (order.data.fatherName) { %>
-      <div style="position:absolute;top:49%;left:22%;font-size:19px;font-weight:600;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif">
+      <div style="position:absolute;top:<%= P.father.y %>%;left:<%= P.father.x %>%;font-size:19px;font-weight:600;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif">
         <%= order.data.fatherName %>
       </div>
     <% } %>
 
     <!-- মাতার নাম -->
     <% if (order.data.motherName) { %>
-      <div style="position:absolute;top:58%;left:22%;font-size:19px;font-weight:600;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif">
+      <div style="position:absolute;top:<%= P.mother.y %>%;left:<%= P.mother.x %>%;font-size:19px;font-weight:600;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif">
         <%= order.data.motherName %>
       </div>
     <% } %>
 
     <!-- জন্ম তারিখ -->
     <% if (order.data.birthDate) { %>
-      <div style="position:absolute;top:68%;left:22%;font-size:19px;font-weight:600;color:#dc2626;font-family:'Kalpurush','Hind Siliguri',sans-serif">
+      <div style="position:absolute;top:<%= P.birthDate.y %>%;left:<%= P.birthDate.x %>%;font-size:19px;font-weight:600;color:#dc2626;font-family:'Kalpurush','Hind Siliguri',sans-serif">
         <%= order.data.birthDate %>
       </div>
     <% } %>
 
-    <!-- আইডি নাম্বার (লাল রঙে) -->
-    <div style="position:absolute;top:78%;left:22%;font-size:26px;font-weight:900;color:#dc2626;font-family:'Kalpurush','Hind Siliguri',sans-serif;letter-spacing:.5px">
+    <!-- আইডি নাম্বার -->
+    <div style="position:absolute;top:<%= P.idNumber.y %>%;left:<%= P.idNumber.x %>%;font-size:26px;font-weight:900;color:#dc2626;font-family:'Kalpurush','Hind Siliguri',sans-serif;letter-spacing:.5px">
       <%= order.data.idNumber %>
     </div>
 
     <!-- ঠিকানা -->
     <% if (order.data.address) { %>
-      <div style="position:absolute;top:24%;right:3%;width:48%;font-size:14px;color:#000;line-height:1.6;font-family:'Kalpurush','Hind Siliguri',sans-serif">
+      <div style="position:absolute;top:<%= P.address.y %>%;left:<%= P.address.x %>%;width:42%;font-size:14px;color:#000;line-height:1.6;font-family:'Kalpurush','Hind Siliguri',sans-serif">
         <%= order.data.address %>
       </div>
     <% } %>
 
     <!-- রক্তের গ্রুপ -->
     <% if (order.data.bloodGroup) { %>
-      <div style="position:absolute;top:53%;right:38%;font-size:15px;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif;font-weight:600">
+      <div style="position:absolute;top:<%= P.blood.y %>%;left:<%= P.blood.x %>%;font-size:15px;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif;font-weight:600">
         <%= order.data.bloodGroup %>
       </div>
     <% } %>
 
     <!-- জন্মস্থান -->
     <% if (order.data.birthPlace) { %>
-      <div style="position:absolute;top:53%;right:3%;font-size:15px;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif;font-weight:600">
+      <div style="position:absolute;top:<%= P.birthPlace.y %>%;left:<%= P.birthPlace.x %>%;font-size:15px;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif;font-weight:600">
         <%= order.data.birthPlace %>
       </div>
     <% } %>
 
     <!-- ইস্যু তারিখ -->
     <% if (order.data.issueDate) { %>
-      <div style="position:absolute;top:67%;right:3%;font-size:15px;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif;font-weight:600">
+      <div style="position:absolute;top:<%= P.issueDate.y %>%;left:<%= P.issueDate.x %>%;font-size:15px;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif;font-weight:600">
         <%= order.data.issueDate %>
       </div>
     <% } %>
 
     <!-- স্বাক্ষর -->
     <% if (order.data.signatureFile) { %>
-      <div style="position:absolute;top:71%;left:5%;width:14%;height:13%;overflow:hidden">
+      <div style="position:absolute;top:<%= P.signature.y %>%;left:<%= P.signature.x %>%;width:<%= P.signature.w %>%;height:<%= P.signature.h %>%;overflow:hidden">
         <img src="/uploads/<%= order.data.signatureFile %>" alt="Signature" style="width:100%;height:100%;object-fit:contain;">
       </div>
     <% } %>
@@ -96,29 +123,19 @@
     <button onclick="downloadId()" class="btn-yellow" style="padding:14px 40px;font-size:16px;justify-content:center">⬇️ ডাউনলোড করুন (PNG)</button>
     <a href="/user/id-maker" style="padding:14px 30px;font-size:15px;text-decoration:none;background:#64748b;color:#fff;border-radius:10px;display:inline-flex;align-items:center">+ আরেকটা তৈরি করুন</a>
   </div>
-
-  <p style="text-align:center;color:#64748b;font-size:13px;margin-top:14px">
-    💡 ডাউনলোড ক্লিক করলে টেমপ্লেট + আপনার তথ্য একসাথে একটা ছবি হিসেবে নামবে
-  </p>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 function downloadId() {
   const card = document.getElementById('idCard');
-  html2canvas(card, {
-    scale: 3,
-    useCORS: true,
-    allowTaint: true,
-    backgroundColor: '#ffffff'
-  }).then(canvas => {
-    const link = document.createElement('a');
-    link.download = 'id-card-<%= order._id %>.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  }).catch(err => {
-    alert('ডাউনলোডে সমস্যা: ' + err.message);
-  });
+  html2canvas(card, { scale: 3, useCORS: true, allowTaint: true, backgroundColor: '#ffffff' })
+    .then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'id-card-<%= order._id %>.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }).catch(err => alert('ডাউনলোডে সমস্যা: ' + err.message));
 }
 </script>
 

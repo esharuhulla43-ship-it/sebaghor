@@ -1,0 +1,124 @@
+<%- include('../partials/head', { cssFile: 'dashboard.css', bodyClass: 'dash' }) %>
+
+<div class="topbar">
+  <div class="left"><a href="/admin/id-maker" style="color:#0f5132;font-weight:700">⬅ ফিরে যান</a></div>
+  <div class="right"><b style="color:#0f5132">🎯 পজিশন সেট করুন — <%= template.name %></b></div>
+</div>
+
+<div class="section" style="max-width:1100px;margin:20px auto">
+
+  <div class="section-title">🎯 পজিশন এডিটর</div>
+  <p style="color:#64748b;font-size:13px;margin-bottom:14px">
+    প্রতিটা ফিল্ডের X, Y (%) পরিবর্তন করুন — টেমপ্লেটে সাথে সাথে বসবে দেখতে পাবেন। তারপর সেভ করুন।
+  </p>
+
+  <!-- Live Preview -->
+  <div class="small-card" style="padding:16px;margin-bottom:20px">
+    <div style="position:relative;width:100%;max-width:900px;margin:0 auto;background:#fff;border:1px solid #333;overflow:hidden" id="previewBox">
+      <img src="/uploads/<%= template.templateImage %>" style="display:block;width:100%;height:auto">
+      
+      <!-- ছবি -->
+      <div id="pv_photo" style="position:absolute;border:2px dashed #dc2626;background:rgba(220,38,38,.15);display:flex;align-items:center;justify-content:center;font-size:10px;color:#dc2626">PHOTO</div>
+      
+      <!-- নাম -->
+      <div id="pv_nameBangla" style="position:absolute;background:rgba(37,99,235,.8);color:#fff;padding:2px 6px;font-size:12px;border-radius:4px;font-family:'Kalpurush','Hind Siliguri',sans-serif">নাম (বাংলা)</div>
+      <div id="pv_nameEnglish" style="position:absolute;background:rgba(37,99,235,.7);color:#fff;padding:2px 6px;font-size:11px;border-radius:4px">Name</div>
+      <div id="pv_father" style="position:absolute;background:rgba(37,99,235,.7);color:#fff;padding:2px 6px;font-size:11px;border-radius:4px;font-family:'Kalpurush','Hind Siliguri',sans-serif">পিতা</div>
+      <div id="pv_mother" style="position:absolute;background:rgba(37,99,235,.7);color:#fff;padding:2px 6px;font-size:11px;border-radius:4px;font-family:'Kalpurush','Hind Siliguri',sans-serif">মাতা</div>
+      <div id="pv_birthDate" style="position:absolute;background:rgba(220,38,38,.7);color:#fff;padding:2px 6px;font-size:11px;border-radius:4px">DOB</div>
+      <div id="pv_idNumber" style="position:absolute;background:rgba(220,38,38,.9);color:#fff;padding:2px 6px;font-size:12px;border-radius:4px;font-weight:900">ID NO</div>
+      <div id="pv_address" style="position:absolute;background:rgba(16,185,129,.7);color:#fff;padding:2px 6px;font-size:11px;border-radius:4px;font-family:'Kalpurush','Hind Siliguri',sans-serif">ঠিকানা</div>
+      <div id="pv_blood" style="position:absolute;background:rgba(16,185,129,.7);color:#fff;padding:2px 6px;font-size:11px;border-radius:4px">Blood</div>
+      <div id="pv_birthPlace" style="position:absolute;background:rgba(16,185,129,.7);color:#fff;padding:2px 6px;font-size:11px;border-radius:4px;font-family:'Kalpurush','Hind Siliguri',sans-serif">জন্মস্থান</div>
+      <div id="pv_issueDate" style="position:absolute;background:rgba(16,185,129,.7);color:#fff;padding:2px 6px;font-size:11px;border-radius:4px;font-family:'Kalpurush','Hind Siliguri',sans-serif">ইস্যু তারিখ</div>
+      <div id="pv_signature" style="position:absolute;border:2px dashed #16a34a;background:rgba(22,163,74,.15);display:flex;align-items:center;justify-content:center;font-size:10px;color:#16a34a">SIGN</div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form method="POST" action="/admin/id-maker/position/<%= template._id %>" style="background:#f0fdf4;padding:20px;border-radius:12px">
+
+    <%
+      const fieldLabels = {
+        photo: '📷 ছবি',
+        nameBangla: 'নাম (বাংলা)',
+        nameEnglish: 'নাম (ইংরেজি)',
+        father: 'পিতা',
+        mother: 'মাতা',
+        birthDate: 'জন্ম তারিখ',
+        idNumber: 'আইডি নাম্বার',
+        address: 'ঠিকানা',
+        blood: 'রক্তের গ্রুপ',
+        birthPlace: 'জন্মস্থান',
+        issueDate: 'ইস্যু তারিখ',
+        signature: 'স্বাক্ষর'
+      };
+      const fields = Object.keys(fieldLabels);
+      const pos = template.positions || {};
+    %>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px">
+
+      <% fields.forEach(field => { %>
+        <% 
+          const p = pos[field] || { x: 20, y: 50, w: 10, h: 10 };
+          const hasSize = (field === 'photo' || field === 'signature');
+        %>
+        <div style="background:#fff;padding:12px;border-radius:8px;border:1px solid #d1fae5">
+          <b style="font-size:13px;color:#0f5132;display:block;margin-bottom:8px"><%= fieldLabels[field] %></b>
+          
+          <label style="font-size:11px;color:#64748b">X (%)</label>
+          <input type="number" name="<%= field %>_x" value="<%= p.x %>" min="0" max="100" step="0.5" class="pos-x" data-field="<%= field %>" style="width:100%;padding:6px;margin-bottom:6px;border:1px solid #d1fae5;border-radius:4px;font-size:13px">
+          
+          <label style="font-size:11px;color:#64748b">Y (%)</label>
+          <input type="number" name="<%= field %>_y" value="<%= p.y %>" min="0" max="100" step="0.5" class="pos-y" data-field="<%= field %>" style="width:100%;padding:6px;margin-bottom:6px;border:1px solid #d1fae5;border-radius:4px;font-size:13px">
+          
+          <% if (hasSize) { %>
+            <label style="font-size:11px;color:#64748b">Width (%)</label>
+            <input type="number" name="<%= field %>_w" value="<%= p.w || 14 %>" min="1" max="100" step="0.5" class="pos-w" data-field="<%= field %>" style="width:100%;padding:6px;margin-bottom:6px;border:1px solid #d1fae5;border-radius:4px;font-size:13px">
+            
+            <label style="font-size:11px;color:#64748b">Height (%)</label>
+            <input type="number" name="<%= field %>_h" value="<%= p.h || 12 %>" min="1" max="100" step="0.5" class="pos-h" data-field="<%= field %>" style="width:100%;padding:6px;margin-bottom:6px;border:1px solid #d1fae5;border-radius:4px;font-size:13px">
+          <% } %>
+        </div>
+      <% }) %>
+
+    </div>
+
+    <div style="text-align:center;margin-top:20px">
+      <button type="submit" class="btn-yellow" style="padding:12px 40px;font-size:16px">💾 সেভ করুন</button>
+    </div>
+  </form>
+
+</div>
+
+<script>
+const fields = ['photo','nameBangla','nameEnglish','father','mother','birthDate','idNumber','address','blood','birthPlace','issueDate','signature'];
+
+function updatePreview() {
+  fields.forEach(field => {
+    const pv = document.getElementById('pv_' + field);
+    const xEl = document.querySelector(`.pos-x[data-field="${field}"]`);
+    const yEl = document.querySelector(`.pos-y[data-field="${field}"]`);
+    const wEl = document.querySelector(`.pos-w[data-field="${field}"]`);
+    const hEl = document.querySelector(`.pos-h[data-field="${field}"]`);
+    if (!pv || !xEl || !yEl) return;
+
+    const x = Number(xEl.value) || 0;
+    const y = Number(yEl.value) || 0;
+    pv.style.left = x + '%';
+    pv.style.top = y + '%';
+
+    if (wEl) pv.style.width = (Number(wEl.value) || 10) + '%';
+    if (hEl) pv.style.height = (Number(hEl.value) || 10) + '%';
+  });
+}
+
+document.querySelectorAll('input[type="number"]').forEach(inp => {
+  inp.addEventListener('input', updatePreview);
+});
+
+updatePreview();
+</script>
+
+</body></html>

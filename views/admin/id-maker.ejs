@@ -51,6 +51,9 @@
               <button class="btn-yellow" style="justify-content:center;font-size:13px;padding:8px">💾 সেভ করুন</button>
             </form>
           </details>
+          <a href="/admin/id-maker/position/<%= t._id %>" style="text-decoration:none;width:100%">
+  <button type="button" class="btn-yellow" style="width:100%;justify-content:center;font-size:13px;padding:9px;background:#8b5cf6;border-color:#8b5cf6;color:#fff">🎯 পজিশন সেট করুন</button>
+</a>
 
           <form method="POST" action="/admin/id-maker/delete/<%= t._id %>" onsubmit="return confirm('ডিলিট করবেন?')" style="width:100%">
             <button class="btn-ghost" style="width:100%;justify-content:center;font-size:12px;padding:8px;background:#dc2626;border-color:#dc2626;color:#fff">🗑️ ডিলিট</button>

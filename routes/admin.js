@@ -358,4 +358,44 @@ router.post('/id-maker/delete/:id', isAdmin, async (req, res) => {
   req.flash('success', '🗑️ ডিলিট হয়েছে');
   res.redirect('/admin/id-maker');
 });
+// পজিশন এডিটর পেজ
+router.get('/id-maker/position/:id', isAdmin, async (req, res) => {
+  const template = await IdMaker.findById(req.params.id);
+  if (!template) {
+    req.flash('error', 'টেমপ্লেট পাওয়া যায়নি');
+    return res.redirect('/admin/id-maker');
+  }
+  res.render('admin/id-maker-position', { template });
+});
+
+// পজিশন সেভ
+router.post('/id-maker/position/:id', isAdmin, async (req, res) => {
+  try {
+    const template = await IdMaker.findById(req.params.id);
+    if (!template) {
+      req.flash('error', 'টেমপ্লেট পাওয়া যায়নি');
+      return res.redirect('/admin/id-maker');
+    }
+
+    const fields = ['photo','nameBangla','nameEnglish','father','mother','birthDate','idNumber','address','blood','birthPlace','issueDate','signature'];
+    
+    fields.forEach(field => {
+      if (!template.positions[field]) template.positions[field] = {};
+      if (req.body[field + '_x'] !== undefined) template.positions[field].x = Number(req.body[field + '_x']);
+      if (req.body[field + '_y'] !== undefined) template.positions[field].y = Number(req.body[field + '_y']);
+      if (req.body[field + '_w'] !== undefined) template.positions[field].w = Number(req.body[field + '_w']);
+      if (req.body[field + '_h'] !== undefined) template.positions[field].h = Number(req.body[field + '_h']);
+    });
+
+    template.markModified('positions');
+    await template.save();
+
+    req.flash('success', '✅ পজিশন সেভ হয়েছে');
+    res.redirect('/admin/id-maker');
+  } catch (e) {
+    req.flash('error', 'সমস্যা: ' + e.message);
+    res.redirect('/admin/id-maker');
+  }
+});
+
 module.exports = router;
