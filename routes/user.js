@@ -274,4 +274,79 @@ router.post('/notices/read-all', isActiveUser, async (req, res) => {
   res.json({ ok: true });
 });
 
+// ============= ID MAKER =============
+
+const IdMaker = require('../models/IdMaker');
+const IdOrder = require('../models/IdOrder');
+
+router.get('/id-maker', isActiveUser, async (req, res) => {
+  const templates = await IdMaker.find({ active: true }).sort('-createdAt');
+  const user = await User.findById(req.session.user._id);
+  const myOrders = await IdOrder.find({ user: user._id })
+    .populate('template').sort('-createdAt').limit(20);
+  res.render('user/id-maker', { templates, user, myOrders });
+});
+
+router.get('/id-maker/fill/:id', isActiveUser, async (req, res) => {
+  const template = await IdMaker.findById(req.params.id);
+  const user = await User.findById(req.session.user._id);
+  if (!template || !template.active) return res.redirect('/user/id-maker');
+  res.render('user/id-maker-form', { template, user });
+});
+
+router.post('/id-maker/fill/:id', isActiveUser, upload.fields([
+  { name: 'photoFile', maxCount: 1 },
+  { name: 'signatureFile', maxCount: 1 }
+]), async (req, res) => {
+  try {
+    const user = await User.findById(req.session.user._id);
+    const template = await IdMaker.findById(req.params.id);
+    if (!template || !template.active) return res.redirect('/user/id-maker');
+
+    if (user.balance < template.price) {
+      req.flash('error', 'দয়া করে রিচার্জ করুন');
+      return res.redirect('/user/recharge');
+    }
+
+    user.balance -= template.price;
+    await user.save();
+
+    const order = await IdOrder.create({
+      user: user._id,
+      template: template._id,
+      price: template.price,
+      data: {
+        idNumber: req.body.idNumber || '',
+        pinNumber: req.body.pinNumber || '',
+        nameBangla: req.body.nameBangla || '',
+        nameEnglish: req.body.nameEnglish || '',
+        birthDate: req.body.birthDate || '',
+        birthPlace: req.body.birthPlace || '',
+        fatherName: req.body.fatherName || '',
+        motherName: req.body.motherName || '',
+        gender: req.body.gender || '',
+        bloodGroup: req.body.bloodGroup || '',
+        issueDate: req.body.issueDate || '',
+        address: req.body.address || '',
+        photoFile: req.files['photoFile'] ? req.files['photoFile'][0].filename : '',
+        signatureFile: req.files['signatureFile'] ? req.files['signatureFile'][0].filename : ''
+      }
+    });
+
+    req.flash('success', `✅ আইডি তৈরি হয়েছে — ৳${template.price} কাটা হয়েছে`);
+    res.redirect('/user/id-maker/preview/' + order._id);
+  } catch (e) {
+    req.flash('error', 'সমস্যা: ' + e.message);
+    res.redirect('/user/id-maker');
+  }
+});
+
+router.get('/id-maker/preview/:id', isActiveUser, async (req, res) => {
+  const order = await IdOrder.findById(req.params.id).populate('template');
+  if (!order || order.user.toString() !== req.session.user._id.toString()) {
+    return res.redirect('/user/id-maker');
+  }
+  const user = await User.findById(req.session.user._id);
+  res.render('user/id-maker-preview', { order, user });
+});
 module.exports = router;

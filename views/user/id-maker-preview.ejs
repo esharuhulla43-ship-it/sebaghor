@@ -1,0 +1,113 @@
+<%- include('../partials/head', { cssFile: 'dashboard.css', bodyClass: 'dash' }) %>
+
+<div class="topbar">
+  <div class="left"><a href="/user/id-maker" style="color:#0f5132;font-weight:700">⬅ ফিরে যান</a></div>
+  <div class="right"><div class="balance-chip">💼 <div><small>Balance</small><b>৳ <%= user.balance.toFixed(2) %></b></div></div></div>
+</div>
+
+<div class="section" style="max-width:1000px;margin:20px auto">
+  <div class="section-title">✅ আপনার আইডি তৈরি হয়েছে</div>
+
+  <div id="idCard" style="position:relative;width:100%;max-width:900px;margin:0 auto;background:#fff;border:1px solid #333;overflow:hidden;">
+    <img src="/uploads/<%= order.template.templateImage %>" alt="Template" style="display:block;width:100%;height:auto;">
+
+    <% if (order.data.photoFile) { %>
+      <div style="position:absolute;top:30%;left:4%;width:16%;height:38%;background:#fff;border:1px solid #999;overflow:hidden">
+        <img src="/uploads/<%= order.data.photoFile %>" alt="Photo" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+    <% } %>
+
+    <div style="position:absolute;top:32%;left:23%;font-size:15px;font-weight:700;color:#000;font-family:'Hind Siliguri',sans-serif">
+      <span>নাম:</span><span style="margin-left:8px"><%= order.data.nameBangla %></span>
+    </div>
+
+    <% if (order.data.nameEnglish) { %>
+      <div style="position:absolute;top:40%;left:23%;font-size:13px;font-weight:600;color:#000">
+        <span>Name:</span><span style="margin-left:8px"><%= order.data.nameEnglish %></span>
+      </div>
+    <% } %>
+
+    <% if (order.data.fatherName) { %>
+      <div style="position:absolute;top:48%;left:23%;font-size:14px;font-weight:600;color:#000;font-family:'Hind Siliguri',sans-serif">
+        <span>পিতা:</span><span style="margin-left:8px"><%= order.data.fatherName %></span>
+      </div>
+    <% } %>
+
+    <% if (order.data.motherName) { %>
+      <div style="position:absolute;top:56%;left:23%;font-size:14px;font-weight:600;color:#000;font-family:'Hind Siliguri',sans-serif">
+        <span>মাতা:</span><span style="margin-left:8px"><%= order.data.motherName %></span>
+      </div>
+    <% } %>
+
+    <% if (order.data.birthDate) { %>
+      <div style="position:absolute;top:64%;left:23%;font-size:13px;font-weight:600;color:#c0392b">
+        <span>Date of Birth:</span><span style="margin-left:8px"><%= order.data.birthDate %></span>
+      </div>
+    <% } %>
+
+    <div style="position:absolute;top:73%;left:23%;font-size:18px;font-weight:900;color:#dc2626;font-family:'Hind Siliguri',sans-serif;letter-spacing:.5px">
+      <span>ID NO:</span><span style="margin-left:8px"><%= order.data.idNumber %></span>
+    </div>
+
+    <% if (order.data.address) { %>
+      <div style="position:absolute;top:28%;right:3%;width:44%;font-size:12px;color:#000;line-height:1.5;font-family:'Hind Siliguri',sans-serif">
+        <span style="font-weight:700">ঠিকানা:</span><span style="margin-left:4px"><%= order.data.address %></span>
+      </div>
+    <% } %>
+
+    <% if (order.data.bloodGroup) { %>
+      <div style="position:absolute;top:58%;right:42%;font-size:12px;color:#000;font-family:'Hind Siliguri',sans-serif">
+        <span style="font-weight:700">রক্তের গ্রুপ:</span><span style="margin-left:4px"><%= order.data.bloodGroup %></span>
+      </div>
+    <% } %>
+
+    <% if (order.data.birthPlace) { %>
+      <div style="position:absolute;top:58%;right:3%;font-size:12px;color:#000;font-family:'Hind Siliguri',sans-serif">
+        <span style="font-weight:700">জন্মস্থান:</span><span style="margin-left:4px"><%= order.data.birthPlace %></span>
+      </div>
+    <% } %>
+
+    <% if (order.data.issueDate) { %>
+      <div style="position:absolute;top:72%;right:3%;font-size:12px;color:#000;font-family:'Hind Siliguri',sans-serif">
+        <span style="font-weight:700">প্রদানের তারিখ:</span><span style="margin-left:4px"><%= order.data.issueDate %></span>
+      </div>
+    <% } %>
+
+    <% if (order.data.signatureFile) { %>
+      <div style="position:absolute;top:74%;left:8%;width:14%;height:12%;overflow:hidden">
+        <img src="/uploads/<%= order.data.signatureFile %>" alt="Signature" style="width:100%;height:100%;object-fit:contain;">
+      </div>
+    <% } %>
+  </div>
+
+  <div style="text-align:center;margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <button onclick="downloadId()" class="btn-yellow" style="padding:14px 40px;font-size:16px;justify-content:center">⬇️ ডাউনলোড করুন (PNG)</button>
+    <a href="/user/id-maker" style="padding:14px 30px;font-size:15px;text-decoration:none;background:#64748b;color:#fff;border-radius:10px;display:inline-flex;align-items:center">+ আরেকটা তৈরি করুন</a>
+  </div>
+
+  <p style="text-align:center;color:#64748b;font-size:13px;margin-top:14px">
+    💡 ডাউনলোড ক্লিক করলে টেমপ্লেট + আপনার তথ্য একসাথে একটা ছবি হিসেবে নামবে
+  </p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+function downloadId() {
+  const card = document.getElementById('idCard');
+  html2canvas(card, {
+    scale: 3,
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: '#ffffff'
+  }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'id-card-<%= order._id %>.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }).catch(err => {
+    alert('ডাউনলোডে সমস্যা: ' + err.message);
+  });
+}
+</script>
+
+</body></html>

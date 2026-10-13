@@ -299,4 +299,63 @@ router.post('/orders/cancel/:id', isAdmin, async (req, res) => {
   }
 });
 
+// ============= ID MAKER ম্যানেজমেন্ট =============
+
+const IdMaker = require('../models/IdMaker');
+
+router.get('/id-maker', isAdmin, async (req, res) => {
+  const templates = await IdMaker.find().sort('-createdAt');
+  res.render('admin/id-maker', { templates });
+});
+
+router.post('/id-maker/add', isAdmin, upload.single('templateImage'), async (req, res) => {
+  try {
+    const { name, description, price } = req.body;
+    if (!req.file) {
+      req.flash('error', 'টেমপ্লেট ছবি আপলোড করুন');
+      return res.redirect('/admin/id-maker');
+    }
+    await IdMaker.create({
+      name,
+      description: description || '',
+      price: Number(price),
+      templateImage: req.file.filename
+    });
+    req.flash('success', '✅ টেমপ্লেট যোগ হয়েছে');
+    res.redirect('/admin/id-maker');
+  } catch (e) {
+    req.flash('error', 'সমস্যা: ' + e.message);
+    res.redirect('/admin/id-maker');
+  }
+});
+
+router.post('/id-maker/edit/:id', isAdmin, async (req, res) => {
+  try {
+    const { name, description, price, active } = req.body;
+    await IdMaker.findByIdAndUpdate(req.params.id, {
+      name, description: description || '', price: Number(price), active: active === 'on'
+    });
+    req.flash('success', '✅ আপডেট হয়েছে');
+    res.redirect('/admin/id-maker');
+  } catch (e) {
+    req.flash('error', 'সমস্যা: ' + e.message);
+    res.redirect('/admin/id-maker');
+  }
+});
+
+router.post('/id-maker/toggle/:id', isAdmin, async (req, res) => {
+  const t = await IdMaker.findById(req.params.id);
+  if (t) {
+    t.active = !t.active;
+    await t.save();
+    req.flash('success', t.active ? '✅ চালু' : '⏸️ বন্ধ');
+  }
+  res.redirect('/admin/id-maker');
+});
+
+router.post('/id-maker/delete/:id', isAdmin, async (req, res) => {
+  await IdMaker.findByIdAndDelete(req.params.id);
+  req.flash('success', '🗑️ ডিলিট হয়েছে');
+  res.redirect('/admin/id-maker');
+});
 module.exports = router;

@@ -1,0 +1,45 @@
+<%- include('../partials/head', { cssFile: 'dashboard.css', bodyClass: 'dash' }) %>
+
+<div class="topbar">
+  <div class="left"><a href="/user/dashboard" style="color:#0f5132;font-weight:700">⬅ ফিরে যান</a></div>
+  <div class="right"><div class="balance-chip">💼 <div><small>Balance</small><b>৳ <%= user.balance.toFixed(2) %></b></div></div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">🪪 আইডি মেইক সার্ভিস</div>
+  <% if (templates.length === 0) { %>
+    <p style="color:#64748b">এখনো কোনো টেমপ্লেট নেই।</p>
+  <% } else { %>
+    <div class="small-grid">
+      <% templates.forEach(t => { %>
+        <a href="/user/id-maker/fill/<%= t._id %>" class="small-card" style="padding:16px;flex-direction:column;align-items:flex-start;gap:10px">
+          <img src="/uploads/<%= t.templateImage %>" alt="Template" style="width:100%;height:140px;object-fit:cover;border-radius:8px;border:1px solid #d1fae5">
+          <b style="font-size:15px"><%= t.name %></b>
+          <% if (t.description) { %><p style="font-size:12px;color:#64748b"><%= t.description %></p><% } %>
+          <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
+            <span style="color:#10b981;font-weight:700;font-size:16px">৳ <%= t.price %></span>
+            <span style="color:#2563eb;font-weight:700">তৈরি করুন ➜</span>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<% if (myOrders && myOrders.length > 0) { %>
+<div class="section">
+  <div class="section-title">📋 আমার তৈরি করা আইডি (<%= myOrders.length %>)</div>
+  <div class="small-grid">
+    <% myOrders.forEach(o => { %>
+      <a href="/user/id-maker/preview/<%= o._id %>" class="small-card" style="padding:14px;flex-direction:column;gap:8px">
+        <b><%= o.template ? o.template.name : 'Deleted' %></b>
+        <p style="font-size:12px;color:#64748b">🕐 <%= o.createdAt.toLocaleString('bn-BD') %></p>
+        <p style="font-size:12px;color:#10b981">৳ <%= o.price %></p>
+        <span style="color:#2563eb;font-size:12px;font-weight:700">প্রিভিউ দেখুন ➜</span>
+      </a>
+    <% }) %>
+  </div>
+</div>
+<% } %>
+
+</body></html>
