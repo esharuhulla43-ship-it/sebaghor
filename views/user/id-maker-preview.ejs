@@ -8,73 +8,85 @@
 <div class="section" style="max-width:1000px;margin:20px auto">
   <div class="section-title">✅ আপনার আইডি তৈরি হয়েছে</div>
 
-  <div id="idCard" style="position:relative;width:100%;max-width:900px;margin:0 auto;background:#fff;border:1px solid #333;overflow:hidden;">
+  <div id="idCard" style="position:relative;width:100%;max-width:1000px;margin:0 auto;background:#fff;border:1px solid #333;overflow:hidden;font-family:'Kalpurush','Hind Siliguri',sans-serif">
     <img src="/uploads/<%= order.template.templateImage %>" alt="Template" style="display:block;width:100%;height:auto;">
 
+    <!-- ছবি (বাম পাশে) -->
     <% if (order.data.photoFile) { %>
-      <div style="position:absolute;top:30%;left:4%;width:16%;height:38%;background:#fff;border:1px solid #999;overflow:hidden">
+      <div style="position:absolute;top:31%;left:2.5%;width:15%;height:42%;overflow:hidden">
         <img src="/uploads/<%= order.data.photoFile %>" alt="Photo" style="width:100%;height:100%;object-fit:cover;">
       </div>
     <% } %>
 
-    <div style="position:absolute;top:32%;left:23%;font-size:15px;font-weight:700;color:#000;font-family:'Hind Siliguri',sans-serif">
-      <span>নাম:</span><span style="margin-left:8px"><%= order.data.nameBangla %></span>
+    <!-- নাম (বাংলা) -->
+    <div style="position:absolute;top:31%;left:22%;font-size:22px;font-weight:700;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif">
+      <%= order.data.nameBangla %>
     </div>
 
+    <!-- নাম (ইংরেজি) -->
     <% if (order.data.nameEnglish) { %>
-      <div style="position:absolute;top:40%;left:23%;font-size:13px;font-weight:600;color:#000">
-        <span>Name:</span><span style="margin-left:8px"><%= order.data.nameEnglish %></span>
+      <div style="position:absolute;top:40%;left:22%;font-size:20px;font-weight:600;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif">
+        <%= order.data.nameEnglish %>
       </div>
     <% } %>
 
+    <!-- পিতার নাম -->
     <% if (order.data.fatherName) { %>
-      <div style="position:absolute;top:48%;left:23%;font-size:14px;font-weight:600;color:#000;font-family:'Hind Siliguri',sans-serif">
-        <span>পিতা:</span><span style="margin-left:8px"><%= order.data.fatherName %></span>
+      <div style="position:absolute;top:49%;left:22%;font-size:19px;font-weight:600;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif">
+        <%= order.data.fatherName %>
       </div>
     <% } %>
 
+    <!-- মাতার নাম -->
     <% if (order.data.motherName) { %>
-      <div style="position:absolute;top:56%;left:23%;font-size:14px;font-weight:600;color:#000;font-family:'Hind Siliguri',sans-serif">
-        <span>মাতা:</span><span style="margin-left:8px"><%= order.data.motherName %></span>
+      <div style="position:absolute;top:58%;left:22%;font-size:19px;font-weight:600;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif">
+        <%= order.data.motherName %>
       </div>
     <% } %>
 
+    <!-- জন্ম তারিখ -->
     <% if (order.data.birthDate) { %>
-      <div style="position:absolute;top:64%;left:23%;font-size:13px;font-weight:600;color:#c0392b">
-        <span>Date of Birth:</span><span style="margin-left:8px"><%= order.data.birthDate %></span>
+      <div style="position:absolute;top:68%;left:22%;font-size:19px;font-weight:600;color:#dc2626;font-family:'Kalpurush','Hind Siliguri',sans-serif">
+        <%= order.data.birthDate %>
       </div>
     <% } %>
 
-    <div style="position:absolute;top:73%;left:23%;font-size:18px;font-weight:900;color:#dc2626;font-family:'Hind Siliguri',sans-serif;letter-spacing:.5px">
-      <span>ID NO:</span><span style="margin-left:8px"><%= order.data.idNumber %></span>
+    <!-- আইডি নাম্বার (লাল রঙে) -->
+    <div style="position:absolute;top:78%;left:22%;font-size:26px;font-weight:900;color:#dc2626;font-family:'Kalpurush','Hind Siliguri',sans-serif;letter-spacing:.5px">
+      <%= order.data.idNumber %>
     </div>
 
+    <!-- ঠিকানা -->
     <% if (order.data.address) { %>
-      <div style="position:absolute;top:28%;right:3%;width:44%;font-size:12px;color:#000;line-height:1.5;font-family:'Hind Siliguri',sans-serif">
-        <span style="font-weight:700">ঠিকানা:</span><span style="margin-left:4px"><%= order.data.address %></span>
+      <div style="position:absolute;top:24%;right:3%;width:48%;font-size:14px;color:#000;line-height:1.6;font-family:'Kalpurush','Hind Siliguri',sans-serif">
+        <%= order.data.address %>
       </div>
     <% } %>
 
+    <!-- রক্তের গ্রুপ -->
     <% if (order.data.bloodGroup) { %>
-      <div style="position:absolute;top:58%;right:42%;font-size:12px;color:#000;font-family:'Hind Siliguri',sans-serif">
-        <span style="font-weight:700">রক্তের গ্রুপ:</span><span style="margin-left:4px"><%= order.data.bloodGroup %></span>
+      <div style="position:absolute;top:53%;right:38%;font-size:15px;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif;font-weight:600">
+        <%= order.data.bloodGroup %>
       </div>
     <% } %>
 
+    <!-- জন্মস্থান -->
     <% if (order.data.birthPlace) { %>
-      <div style="position:absolute;top:58%;right:3%;font-size:12px;color:#000;font-family:'Hind Siliguri',sans-serif">
-        <span style="font-weight:700">জন্মস্থান:</span><span style="margin-left:4px"><%= order.data.birthPlace %></span>
+      <div style="position:absolute;top:53%;right:3%;font-size:15px;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif;font-weight:600">
+        <%= order.data.birthPlace %>
       </div>
     <% } %>
 
+    <!-- ইস্যু তারিখ -->
     <% if (order.data.issueDate) { %>
-      <div style="position:absolute;top:72%;right:3%;font-size:12px;color:#000;font-family:'Hind Siliguri',sans-serif">
-        <span style="font-weight:700">প্রদানের তারিখ:</span><span style="margin-left:4px"><%= order.data.issueDate %></span>
+      <div style="position:absolute;top:67%;right:3%;font-size:15px;color:#000;font-family:'Kalpurush','Hind Siliguri',sans-serif;font-weight:600">
+        <%= order.data.issueDate %>
       </div>
     <% } %>
 
+    <!-- স্বাক্ষর -->
     <% if (order.data.signatureFile) { %>
-      <div style="position:absolute;top:74%;left:8%;width:14%;height:12%;overflow:hidden">
+      <div style="position:absolute;top:71%;left:5%;width:14%;height:13%;overflow:hidden">
         <img src="/uploads/<%= order.data.signatureFile %>" alt="Signature" style="width:100%;height:100%;object-fit:contain;">
       </div>
     <% } %>
