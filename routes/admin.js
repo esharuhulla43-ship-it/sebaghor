@@ -398,4 +398,39 @@ router.post('/id-maker/position/:id', isAdmin, async (req, res) => {
   }
 });
 
+// ============= রিসিভ ম্যানেজমেন্ট =============
+
+const Receipt = require('../models/Receipt');
+
+// রিসিভ সেটিংস আপডেট (দোকানের নাম ও মোবাইল)
+router.post('/receipt-settings', isAdmin, async (req, res) => {
+  try {
+    const { shopName, shopMobile } = req.body;
+    let s = await Setting.findOne();
+    if (!s) s = new Setting();
+    s.shopName = shopName;
+    s.shopMobile = shopMobile;
+    await s.save();
+    req.flash('success', '✅ দোকানের তথ্য সেভ হয়েছে');
+    res.redirect('/admin/receipts');
+  } catch (e) {
+    req.flash('error', 'সমস্যা: ' + e.message);
+    res.redirect('/admin/receipts');
+  }
+});
+
+// সব রিসিভ দেখা
+router.get('/receipts', isAdmin, async (req, res) => {
+  const receipts = await Receipt.find().populate('user').sort('-createdAt');
+  const setting = await Setting.findOne() || {};
+  res.render('admin/receipts', { receipts, setting });
+});
+
+// রিসিভ ডিলিট
+router.post('/receipts/delete/:id', isAdmin, async (req, res) => {
+  await Receipt.findByIdAndDelete(req.params.id);
+  req.flash('success', '🗑️ রিসিভ ডিলিট হয়েছে');
+  res.redirect('/admin/receipts');
+});
+
 module.exports = router;

@@ -1,0 +1,53 @@
+<%- include('../partials/head', { cssFile: 'dashboard.css', bodyClass: 'dash' }) %>
+
+<div class="topbar">
+  <div class="left"><a href="/admin/dashboard" style="color:#0f5132;font-weight:700">⬅ ড্যাশবোর্ডে ফিরুন</a></div>
+  <div class="right"><b style="color:#0f5132">🧾 রিসিভ ম্যানেজমেন্ট</b></div>
+</div>
+
+<div class="section">
+  <div class="section-title">⚙️ দোকানের তথ্য সেটিংস</div>
+  <div class="small-card" style="cursor:default;padding:20px">
+    <form method="POST" action="/admin/receipt-settings" style="display:flex;flex-direction:column;gap:12px">
+      <div class="flex2">
+        <div class="form-row">
+          <label>দোকানের নাম</label>
+          <input name="shopName" value="<%= setting.shopName || '' %>" required style="padding:11px;border:1px solid #d1fae5;border-radius:8px;font-family:inherit">
+        </div>
+        <div class="form-row">
+          <label>দোকানের মোবাইল নাম্বার</label>
+          <input name="shopMobile" value="<%= setting.shopMobile || '' %>" required style="padding:11px;border:1px solid #d1fae5;border-radius:8px;font-family:inherit">
+        </div>
+      </div>
+      <button class="btn-yellow" style="justify-content:center;padding:12px;font-size:15px">💾 সেভ করুন</button>
+    </form>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">📋 সব রিসিভ (<%= receipts.length %>)</div>
+  <% if (receipts.length === 0) { %>
+    <p style="color:#64748b">কোনো রিসিভ তৈরি হয়নি।</p>
+  <% } else { %>
+    <div class="small-grid">
+      <% receipts.forEach(r => { %>
+        <div class="small-card" style="cursor:default;flex-direction:column;gap:8px;padding:16px">
+          <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
+            <b style="color:#dc2626">রিসিভ নং: <%= r.receiptNumber %></b>
+            <span style="font-size:11px;color:#64748b"><%= r.dateTime %></span>
+          </div>
+          <p style="font-size:13px;color:#0f172a">
+            <b>কাস্টমার:</b> <%= r.customerName %><br>
+            <b>মোবাইল:</b> <%= r.customerMobile || 'N/A' %><br>
+            <b>মোট টাকা:</b> <span style="color:#10b981;font-weight:700">৳ <%= r.totalAmount %></span>
+          </p>
+          <form method="POST" action="/admin/receipts/delete/<%= r._id %>" onsubmit="return confirm('রিসিভটি স্থায়ীভাবে ডিলিট করবেন?')" style="width:100%;margin-top:8px">
+            <button class="btn-ghost" style="width:100%;justify-content:center;font-size:12px;padding:8px;background:#dc2626;border-color:#dc2626;color:#fff">🗑️ ডিলিট করুন</button>
+          </form>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+</body></html>

@@ -1,0 +1,86 @@
+<%- include('../partials/head', { cssFile: 'dashboard.css', bodyClass: 'dash' }) %>
+
+<div class="topbar">
+  <div class="left"><a href="/user/dashboard" style="color:#0f5132;font-weight:700">⬅ ড্যাশবোর্ডে ফিরুন</a></div>
+  <div class="right"><button onclick="window.print()" class="btn-yellow">🖨️ প্রিন্ট করুন</button></div>
+</div>
+
+<div class="section" style="max-width:1000px;margin:20px auto">
+  <div class="section-title">✅ রিসিভ তৈরি হয়েছে</div>
+
+  <!-- রিসিভ ডিজাইন শুরু (NID কার্ডের সাইজ) -->
+  <div id="receiptCard" style="position:relative;width:100%;max-width:800px;margin:0 auto;background:#fff;border:2px solid #0f5132;border-radius:10px;overflow:hidden;font-family:'Kalpurush','Hind Siliguri',sans-serif;padding:20px;">
+    
+    <!-- হেডার -->
+    <div style="display:flex;justify-content:space-between;border-bottom:2px dashed #0f5132;padding-bottom:12px;margin-bottom:14px;">
+      <div>
+        <h1 style="font-size:24px;font-weight:900;color:#0f5132;margin-bottom:4px;"><%= setting.shopName || 'আমার দোকান' %></h1>
+        <p style="font-size:14px;color:#64748b;">📱 মোবাইল: <%= setting.shopMobile || '01700000000' %></p>
+      </div>
+      <div style="text-align:right;">
+        <p style="font-size:14px;font-weight:700;color:#dc2626;">রিসিভ নং: <%= receipt.receiptNumber %></p>
+        <p style="font-size:13px;color:#64748b;"><%= receipt.dateTime %></p>
+      </div>
+    </div>
+
+    <!-- কাস্টমারের তথ্য -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:15px;margin-bottom:16px;">
+      <div><b>কাস্টমারের নাম:</b> <%= receipt.customerName %></div>
+      <div><b>মোবাইল:</b> <%= receipt.customerMobile || 'N/A' %></div>
+      <div><b>ঠিকানা:</b> <%= receipt.customerAddress || 'N/A' %></div>
+      <div><b>SMS অ্যাকাউন্ট:</b> <%= receipt.smsAccount || 'N/A' %></div>
+      <div style="grid-column:1/-1;"><b>ট্রানজেকশন আইডি (TrxID):</b> <%= receipt.transactionId || 'N/A' %></div>
+    </div>
+
+    <!-- টাকার হিসাব -->
+    <div style="background:#f0fdf4;padding:14px;border-radius:8px;margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;font-size:16px;margin-bottom:8px;">
+        <span>বিদ্যুৎ বিল:</span>
+        <b>৳ <%= receipt.billAmount %></b>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:16px;margin-bottom:8px;border-bottom:1px dashed #cbd5e1;padding-bottom:8px;">
+        <span>চার্জ:</span>
+        <b>৳ <%= receipt.chargeAmount %></b>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:20px;font-weight:900;color:#dc2626;">
+        <span>মোট টাকা:</span>
+        <b>৳ <%= receipt.totalAmount %></b>
+      </div>
+    </div>
+
+    <!-- ফুটার -->
+    <div style="text-align:center;font-size:12px;color:#64748b;border-top:1px dashed #cbd5e1;padding-top:12px;">
+      <p>ধন্যবাদ! আবার আসবেন।</p>
+      <p style="margin-top:4px;">এই রিসিভটি কম্পিউটার জেনারেটেড।</p>
+    </div>
+  </div>
+  <!-- রিসিভ ডিজাইন শেষ -->
+
+  <!-- ডাউনলোড বাটন -->
+  <div style="text-align:center;margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <button onclick="downloadReceipt()" class="btn-yellow" style="padding:14px 40px;font-size:16px;">⬇️ ডাউনলোড করুন (PNG)</button>
+    <a href="/user/create-receipt" class="btn-ghost" style="padding:14px 30px;font-size:15px;text-decoration:none;background:#64748b;color:#fff;border-radius:10px;">+ আরেকটি তৈরি করুন</a>
+  </div>
+</div>
+
+<!-- html2canvas লাইব্রেরি ডাউনলোড এবং ডাউনলোড ফাংশন -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+function downloadReceipt() {
+  const card = document.getElementById('receiptCard');
+  html2canvas(card, {
+    scale: 3,
+    useCORS: true,
+    backgroundColor: '#ffffff'
+  }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'receipt-<%= receipt.receiptNumber %>.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }).catch(err => {
+    alert('ডাউনলোডে সমস্যা: ' + err.message);
+  });
+}
+</script>
+
+</body></html>

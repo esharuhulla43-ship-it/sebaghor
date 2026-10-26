@@ -349,4 +349,79 @@ router.get('/id-maker/preview/:id', isActiveUser, async (req, res) => {
   const user = await User.findById(req.session.user._id);
   res.render('user/id-maker-preview', { order, user });
 });
+// ============= রিসিভ তৈরি ও ডাউনলোড (ইউজার) =============
+
+const Receipt = require('../models/Receipt');
+
+// ১. নতুন রিসিভ ফর্ম দেখাও
+router.get('/create-receipt', isActiveUser, async (req, res) => {
+  const user = await User.findById(req.session.user._id);
+  const setting = await Setting.findOne() || {};
+  res.render('user/receipt-form', { user, setting });
+});
+
+// ২. ফর্ম সাবমিট করলে রিসিভ তৈরি হবে
+router.post('/create-receipt', isActiveUser, async (req, res) => {
+  try {
+    const { customerName, customerAddress, smsAccount, customerMobile, transactionId, billAmount, chargeAmount } = req.body;
+    const user = await User.findById(req.session.user._id);
+
+    // অটো রিসিভ নাম্বার তৈরি (যেমন: 2026-01)
+    let setting = await Setting.findOne();
+    if (!setting) setting = new Setting();
+    
+    const currentYear = new Date().getFullYear();
+    if (setting.lastReceiptYear !== currentYear) {
+      setting.lastReceiptYear = currentYear;
+      setting.lastReceiptCounter = 1;
+    } else {
+      setting.lastReceiptCounter += 1;
+    }
+    
+    const receiptNumber = `${currentYear}-${String(setting.lastReceiptCounter).padStart(2, '0')}`;
+    await setting.save();
+
+    // অটো তারিখ ও বাংলা বার
+    const now = new Date();
+    const days = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+    const dayName = days[now.getDay()];
+    const dateString = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} — ${dayName}`;
+
+    const bill = Number(billAmount);
+    const charge = Number(chargeAmount);
+    const total = bill + charge;
+
+    // রিসিভ তৈরি
+    const receipt = await Receipt.create({
+      user: user._id,
+      receiptNumber,
+      customerName,
+      customerAddress,
+      smsAccount,
+      customerMobile,
+      transactionId,
+      billAmount: bill,
+      chargeAmount: charge,
+      totalAmount: total,
+      dateTime: dateString
+    });
+
+    req.flash('success', '✅ রিসিভ তৈরি হয়েছে!');
+    res.redirect('/user/receipt-preview/' + receipt._id);
+  } catch (e) {
+    req.flash('error', 'সমস্যা: ' + e.message);
+    res.redirect('/user/create-receipt');
+  }
+});
+
+// ৩. রিসিভ প্রিভিউ এবং ডাউনলোড পেজ
+router.get('/receipt-preview/:id', isActiveUser, async (req, res) => {
+  const receipt = await Receipt.findById(req.params.id).populate('user');
+  if (!receipt || receipt.user._id.toString() !== req.session.user._id.toString()) {
+    return res.redirect('/user/create-receipt');
+  }
+  const setting = await Setting.findOne() || {};
+  res.render('user/receipt-preview', { receipt, setting });
+});
+
 module.exports = router;
